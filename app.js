@@ -150,7 +150,7 @@ function render(){
  const today=new Date().toDateString();
 
  document.getElementById("summary").textContent=
-   `${db.animals.length} animal${db.animals.length>1?"aux":""} suivi${db.animals.length>1?"s":""} · ${db.events.filter(e=>new Date(e.date).toDateString()===today).length} activité(s) aujourd’hui`;
+   `${db.animals.length} animaux suivi${db.animals.length>1?"s":""} · ${db.events.filter(e=>new Date(e.date).toDateString()===today).length} activité(s) aujourd’hui`;
 
  const cards=db.animals.map(a=>card(a)).join("")
    ||empty("Aucun animal","Ajoute ton premier animal pour commencer.");
@@ -175,7 +175,21 @@ function card(a){
    a.origin?`📄 ${esc(a.origin)}`:""
  ].filter(Boolean).join(" · ");
 
- return `<div class="card"><div class="animal"><div class="avatar">${icons[a.type]||"🐾"}</div><div><b>${esc(a.name||"Sans nom")}</b><div class="muted">${esc(a.species)} · ${esc(typeLabels[a.type]||a.type)}</div></div></div>${meta?`<p class="muted">${meta}</p>`:""}<div style="display:flex;gap:8px;margin-top:10px"><button class="ghost animalAction" data-id="${a.id}" style="flex:1">Ajouter une activité</button><button class="ghost deleteAnimal" data-id="${a.id}" title="Supprimer cet animal">🗑️</button></div></div>`;
+ return `<div class="card animalCard" data-id="${a.id}" style="cursor:pointer">
+   <div class="animal">
+     <div class="avatar">${icons[a.type]||"🐾"}</div>
+     <div>
+       <b>${esc(a.name||"Sans nom")}</b>
+       <div class="muted">${esc(a.species)} · ${esc(typeLabels[a.type]||a.type)}</div>
+     </div>
+   </div>
+   ${meta?`<p class="muted">${meta}</p>`:""}
+   <div style="display:flex;gap:8px;margin-top:10px">
+     <button class="primary editAnimal" data-id="${a.id}" style="flex:1">Modifier</button>
+     <button class="ghost animalAction" data-id="${a.id}" style="flex:1">Ajouter une activité</button>
+     <button class="ghost deleteAnimal" data-id="${a.id}" title="Supprimer cet animal">🗑️</button>
+   </div>
+ </div>`;
 }
 
 function eventHTML(arr){
@@ -210,8 +224,7 @@ document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{
 
  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
  document.getElementById(b.dataset.page).classList.add("active");
-});
-document.getElementById("addAnimal").onclick=()=>openModal(`<h2>Nouvel animal</h2><form id="animalForm"><label>Nom / identifiant <span class="muted">(optionnel)</span></label><input name="name" placeholder="Ex. Kiwi"><label>Espèce</label><input id="speciesSearch" name="species" required list="speciesSuggestions" autocomplete="off" placeholder="Ex. Pogona vitticeps"><datalist id="speciesSuggestions">${SPECIES_CATALOG.map(x=>`<option value="${esc(x.name)}"></option>`).join("")}</datalist><small class="muted">Choisis une espèce de ton catalogue ou tape un autre nom.</small><label>Groupe</label><select id="animalType" name="type"><option value="reptile">Reptiles</option><option value="amphibian">Amphibiens</option><option value="gastropod">Gastéropodes</option><option value="arthropod">Arthropodes</option></select><label>Date de naissance <span class="muted">(optionnel)</span></label><input name="birthDate" type="date"><label>Localisation</label><input name="location" placeholder="Ex. Salle reptiles, terrarium 3..."><label>Certificat d’origine</label><select name="origin"><option value="NC">NC</option><option value="WC">WC</option></select><label>Notes <span class="muted">(optionnel)</span></label><textarea name="notes" placeholder="Informations supplémentaires..."></textarea><div class="formActions"><button type="button" class="ghost" onclick="close()">Annuler</button><button class="primary">Créer</button></div></form>`);
+});document.getElementById("addAnimal").onclick=()=>openModal(`<h2>Nouvel animal</h2><form id="animalForm"><label>Nom / identifiant <span class="muted">(optionnel)</span></label><input name="name" placeholder="Ex. Kiwi"><label>Espèce</label><input id="speciesSearch" name="species" required list="speciesSuggestions" autocomplete="off" placeholder="Ex. Pogona vitticeps"><datalist id="speciesSuggestions">${SPECIES_CATALOG.map(x=>`<option value="${esc(x.name)}"></option>`).join("")}</datalist><small class="muted">Choisis une espèce de ton catalogue ou tape un autre nom.</small><label>Groupe</label><select id="animalType" name="type"><option value="reptile">Reptiles</option><option value="amphibian">Amphibiens</option><option value="gastropod">Gastéropodes</option><option value="arthropod">Arthropodes</option></select><label>Date de naissance <span class="muted">(optionnel)</span></label><input name="birthDate" type="date"><label>Localisation</label><input name="location" placeholder="Ex. Salle reptiles, terrarium 3..."><label>Certificat d’origine</label><select name="origin"><option value="NC">NC</option><option value="WC">WC</option></select><label>Notes <span class="muted">(optionnel)</span></label><textarea name="notes" placeholder="Informations supplémentaires..."></textarea><div class="formActions"><button type="button" class="ghost" onclick="close()">Annuler</button><button class="primary">Créer</button></div></form>`);
 
 document.addEventListener("input",async e=>{
  if(e.target.id!=="speciesSearch")return;
@@ -380,6 +393,92 @@ document.addEventListener("click",e=>{
  }
 });
 
+
+document.addEventListener("click",e=>{
+ const cardEl=e.target.closest(".animalCard");
+ const editBtn=e.target.closest(".editAnimal");
+
+ if(!cardEl && !editBtn)return;
+
+ if(e.target.closest(".animalAction") || e.target.closest(".deleteAnimal"))return;
+
+ const id=editBtn?.dataset.id || cardEl?.dataset.id;
+ const a=animal(id);
+
+ if(!a)return;
+
+ openModal(`<h2>Modifier l’animal</h2>
+<form id="editAnimalForm">
+<input type="hidden" name="id" value="${esc(a.id)}">
+
+<label>Nom / identifiant</label>
+<input name="name" value="${esc(a.name||"")}" placeholder="Ex. Kiwi">
+
+<label>Espèce</label>
+<input name="species" value="${esc(a.species||"")}" required list="editSpeciesSuggestions" autocomplete="off">
+
+<datalist id="editSpeciesSuggestions">
+${SPECIES_CATALOG.map(x=>`<option value="${esc(x.name)}"></option>`).join("")}
+</datalist>
+
+<label>Groupe</label>
+<select name="type">
+<option value="reptile" ${a.type==="reptile"?"selected":""}>Reptiles</option>
+<option value="amphibian" ${a.type==="amphibian"?"selected":""}>Amphibiens</option>
+<option value="gastropod" ${a.type==="gastropod"?"selected":""}>Gastéropodes</option>
+<option value="arthropod" ${a.type==="arthropod"||a.type==="invertebrate"||a.type==="insect"?"selected":""}>Arthropodes</option>
+</select>
+
+<label>Date de naissance</label>
+<input name="birthDate" type="date" value="${esc(a.birthDate||"")}">
+
+<label>Localisation</label>
+<input name="location" value="${esc(a.location||"")}" placeholder="Ex. Salle reptiles, terrarium 3...">
+
+<label>Certificat d’origine</label>
+<select name="origin">
+<option value="NC" ${a.origin==="NC"?"selected":""}>NC</option>
+<option value="WC" ${a.origin==="WC"?"selected":""}>WC</option>
+</select>
+
+<label>Notes</label>
+<textarea name="notes" placeholder="Informations supplémentaires...">${esc(a.notes||"")}</textarea>
+
+<div class="formActions">
+<button type="button" class="ghost" onclick="close()">Annuler</button>
+<button class="primary">Enregistrer</button>
+</div>
+</form>`);
+});
+
+
+document.addEventListener("submit",e=>{
+ if(e.target.id!=="editAnimalForm")return;
+
+ e.preventDefault();
+
+ const f=new FormData(e.target);
+ const a=animal(f.get("id"));
+
+ if(!a)return;
+
+ const species=String(f.get("species")||"").trim();
+
+ if(!species)return;
+
+ a.name=String(f.get("name")||"").trim();
+ a.species=species;
+ a.type=String(f.get("type")||"arthropod");
+ a.birthDate=String(f.get("birthDate")||"");
+ a.location=String(f.get("location")||"").trim();
+ a.origin=String(f.get("origin")||"NC");
+ a.notes=String(f.get("notes")||"").trim();
+
+ save();
+ close();
+});
+
+
 document.addEventListener("click",e=>{
  const b=e.target.closest(".deleteAnimal");
 
@@ -398,6 +497,7 @@ document.addEventListener("click",e=>{
 
  save();
 });
+
 
 function activity(kind,preselect=null){
  let opts=db.animals.map(a=>
@@ -463,9 +563,11 @@ ${valueField}
 </form>`);
 }
 
+
 document.querySelectorAll("[data-action]").forEach(
  b=>b.onclick=()=>activity(b.dataset.action)
 );
+
 
 document.addEventListener("click",e=>{
  let b=e.target.closest(".animalAction");
@@ -473,6 +575,7 @@ document.addEventListener("click",e=>{
  if(b)
    activity("note",b.dataset.id);
 });
+
 
 document.addEventListener("submit",e=>{
  if(e.target.id!=="eventForm")return;
@@ -494,6 +597,7 @@ document.addEventListener("submit",e=>{
  close();
 });
 
+
 if("serviceWorker"in navigator){
  navigator.serviceWorker.getRegistrations().then(rs=>{
    if(rs.length){
@@ -506,6 +610,7 @@ if("serviceWorker"in navigator){
  }).catch(()=>{});
 }
 
+
 let deferred;
 
 window.addEventListener("beforeinstallprompt",e=>{
@@ -514,11 +619,13 @@ window.addEventListener("beforeinstallprompt",e=>{
  document.getElementById("installBtn").classList.remove("hidden");
 });
 
+
 document.getElementById("installBtn").onclick=async()=>{
  if(deferred){
    deferred.prompt();
    deferred=null;
  }
 };
+
 
 render();
