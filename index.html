@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TerraNote</title><meta name="theme-color" content="#173f35">
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header><div><div class="eyebrow">CARNET ANIMALIER</div><h1>TerraNote</h1><p>Le suivi simple de tes reptiles, amphibiens et insectes.</p></div><button id="installBtn" class="ghost hidden">Installer</button></header>
+<main>
+<section id="dashboard" class="page active">
+<div class="hero"><div><span class="pill">Aujourd’hui</span><h2 id="todayTitle"></h2><p id="summary"></p></div><div class="heroMark">🦎</div></div>
+<div class="quick"><button data-action="feeding">🍽️<span>Nourrir</span></button><button data-action="watering">💧<span>Arroser</span></button><button data-action="weight">⚖️<span>Peser</span></button><button data-action="note">📝<span>Note</span></button></div>
+<h3>Mes animaux</h3><div id="animalGrid" class="grid"></div>
+<h3>Dernières activités</h3><div id="recent"></div>
+</section>
+<section id="animals" class="page"><div class="sectionHead"><div><span class="eyebrow">COLLECTION</span><h2>Mes animaux</h2></div><button id="addAnimal" class="primary">+ Ajouter</button></div><div id="allAnimals" class="grid"></div></section>
+<section id="history" class="page"><div class="sectionHead"><div><span class="eyebrow">JOURNAL</span><h2>Historique</h2></div></div><div id="historyList"></div></section>
+</main>
+<nav><button class="nav active" data-page="dashboard">⌂<span>Accueil</span></button><button class="nav" data-page="animals">◉<span>Animaux</span></button><button class="nav" data-page="history">☷<span>Journal</span></button></nav>
+</div>
+
+<div id="modal" class="modal hidden"><div class="sheet"><button id="closeModal" class="close">×</button><div id="modalContent"></div></div></div>
+<script src="app.js"></script>
+</body></html>
