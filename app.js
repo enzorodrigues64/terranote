@@ -1,87 +1,112 @@
-// TerraNote v14 — catalogue préchargé automatiquement
-const typeLabels={reptile:'Reptiles',amphibian:'Amphibiens',gastropod:'Gastéropodes',arthropod:'Arthropodes'};
+// TerraNote v15
+// Gestion complète des animaux, activités et rappels
 
-const SPECIES_CATALOG=[
-{"name":"Cranidium gibbosum","type":"arthropod"},
-{"name":"Brancsikia freyi","type":"arthropod"},
-{"name":"Blaptica dubia","type":"arthropod"},
-{"name":"Compsodes schwarzi","type":"arthropod"},
-{"name":"Elliptorhina chopardi","type":"arthropod"},
-{"name":"Elliptorhina javanica","type":"arthropod"},
-{"name":"Eustegasta buprestoides","type":"arthropod"},
-{"name":"Gyna caffrorum","type":"arthropod"},
-{"name":"Gyna centurio","type":"arthropod"},
-{"name":"Hemiblabera granulata","type":"arthropod"},
-{"name":"Hormetica sp.","type":"arthropod"},
-{"name":"Lucihormetica subcincta","type":"arthropod"},
-{"name":"Lucihormetica verrucosa","type":"arthropod"},
-{"name":"Macropanesthia rhinoceros","type":"arthropod"},
-{"name":"Megaloblatta blaberoides","type":"arthropod"},
-{"name":"Nauphoeta cinerea","type":"arthropod"},
-{"name":"Nocticola vagus","type":"arthropod"},
-{"name":"Oxyhaloa deusta","type":"arthropod"},
-{"name":"Panchlora sp.","type":"arthropod"},
-{"name":"Paraplecta minutissima","type":"arthropod"},
-{"name":"Paratemnopteryx coloniana","type":"arthropod"},
-{"name":"Periplaneta lateralis","type":"arthropod"},
-{"name":"Phoetalia pallida","type":"arthropod"},
-{"name":"Pseudoglomeris magnifica","type":"arthropod"},
-{"name":"Pycnoscelus striatus","type":"arthropod"},
-{"name":"Symploce pallens","type":"arthropod"},
-{"name":"Therea bernhardti","type":"arthropod"},
-{"name":"Therea olegrandjeani","type":"arthropod"},
-{"name":"Therea regularis","type":"arthropod"},
-{"name":"Therea sp.","type":"arthropod"},
-{"name":"Ancylecha fenestrata","type":"arthropod"},
-{"name":"Lirometopum coronatum","type":"arthropod"},
-{"name":"Luzarida sp.","type":"arthropod"},
-{"name":"Melanonotus powellorum","type":"arthropod"},
-{"name":"Nesonotus reticulatus","type":"arthropod"},
-{"name":"Orocharis sp.","type":"arthropod"},
-{"name":"Phalangopsis cf. longipes","type":"arthropod"},
-{"name":"Phymateus saxosus","type":"arthropod"},
-{"name":"Teleutias aduncus","type":"arthropod"},
-{"name":"Vestria sp.","type":"arthropod"},
-{"name":"Xerophyllopteryx fumosa","type":"arthropod"},
-{"name":"Anadenobolus leucostigma","type":"arthropod"},
-{"name":"Aphistogoniulus hova","type":"arthropod"},
-{"name":"Atopochetus caudulanus","type":"arthropod"},
-{"name":"Centrobolus richardi","type":"arthropod"},
-{"name":"Orthoporus lomontii","type":"arthropod"},
-{"name":"Orthoporus sp.","type":"arthropod"},
-{"name":"Sechelleptus sp.","type":"arthropod"},
-{"name":"Zoosphaerium neptunus","type":"arthropod"},
-{"name":"Charinus acosta","type":"arthropod"},
-{"name":"Charinus sp.","type":"arthropod"},
-{"name":"Heterophrynus alces","type":"arthropod"},
-{"name":"Heterophrynus longicornis","type":"arthropod"},
-{"name":"Paraphrynus laevifrons","type":"arthropod"},
-{"name":"Phrynus goesii","type":"arthropod"},
-{"name":"Armadillidae sp.","type":"arthropod"},
-{"name":"Armadillidium gestroi","type":"arthropod"},
-{"name":"Cubaris sp.","type":"arthropod"},
-{"name":"Leptotrichus panzeri","type":"arthropod"},
-{"name":"Porcellio dilatatus","type":"arthropod"},
-{"name":"Porcellio hoffmannseggii","type":"arthropod"},
-{"name":"Porcellio sp.","type":"arthropod"},
-{"name":"Trichorrhina tomentosa","type":"arthropod"},
-{"name":"Trichorrhina sp.","type":"arthropod"},
-{"name":"Venezillo sp.","type":"arthropod"},
-{"name":"Platymeris biguttatus","type":"arthropod"},
-{"name":"Psytalla horrida","type":"arthropod"},
-{"name":"Lophosaurus boydii","type":"reptile"},
-{"name":"Ouroborus cataphractus","type":"reptile"},
-{"name":"Saurodactylus brosseti","type":"reptile"},
-{"name":"Saurodactylus harrisii","type":"reptile"},
-{"name":"Sphaerodactylus elegans","type":"reptile"},
-{"name":"Sphaerodactylus torrei","type":"reptile"},
-{"name":"Ceratophrys cranwelli","type":"amphibian"},
-{"name":"Pyxicephalus adspersus","type":"amphibian"}
+const KEY = "terranote_v14";
+
+const typeLabels = {
+  reptile: "Reptiles",
+  amphibian: "Amphibiens",
+  gastropod: "Gastéropodes",
+  arthropod: "Arthropodes"
+};
+
+const icons = {
+  reptile: "🦎",
+  amphibian: "🐸",
+  gastropod: "🐌",
+  arthropod: "🪲"
+};
+
+const labels = {
+  feeding: "Nourrissage",
+  watering: "Arrosage / brumisation",
+  waterChange: "Changement de l’eau",
+  weight: "Pesée",
+  note: "Note",
+  cleaning: "Nettoyage",
+  treatment: "Traitement",
+  molt: "Mue"
+};
+
+const SPECIES_CATALOG = [
+  {name:"Cranidium gibbosum",type:"arthropod"},
+  {name:"Brancsikia freyi",type:"arthropod"},
+  {name:"Blaptica dubia",type:"arthropod"},
+  {name:"Compsodes schwarzi",type:"arthropod"},
+  {name:"Elliptorhina chopardi",type:"arthropod"},
+  {name:"Elliptorhina javanica",type:"arthropod"},
+  {name:"Eustegasta buprestoides",type:"arthropod"},
+  {name:"Gyna caffrorum",type:"arthropod"},
+  {name:"Gyna centurio",type:"arthropod"},
+  {name:"Hemiblabera granulata",type:"arthropod"},
+  {name:"Hormetica sp.",type:"arthropod"},
+  {name:"Lucihormetica subcincta",type:"arthropod"},
+  {name:"Lucihormetica verrucosa",type:"arthropod"},
+  {name:"Macropanesthia rhinoceros",type:"arthropod"},
+  {name:"Megaloblatta blaberoides",type:"arthropod"},
+  {name:"Nauphoeta cinerea",type:"arthropod"},
+  {name:"Nocticola vagus",type:"arthropod"},
+  {name:"Oxyhaloa deusta",type:"arthropod"},
+  {name:"Panchlora sp.",type:"arthropod"},
+  {name:"Paraplecta minutissima",type:"arthropod"},
+  {name:"Paratemnopteryx coloniana",type:"arthropod"},
+  {name:"Periplaneta lateralis",type:"arthropod"},
+  {name:"Phoetalia pallida",type:"arthropod"},
+  {name:"Pseudoglomeris magnifica",type:"arthropod"},
+  {name:"Pycnoscelus striatus",type:"arthropod"},
+  {name:"Symploce pallens",type:"arthropod"},
+  {name:"Therea bernhardti",type:"arthropod"},
+  {name:"Therea olegrandjeani",type:"arthropod"},
+  {name:"Therea regularis",type:"arthropod"},
+  {name:"Therea sp.",type:"arthropod"},
+  {name:"Ancylecha fenestrata",type:"arthropod"},
+  {name:"Lirometopum coronatum",type:"arthropod"},
+  {name:"Luzarida sp.",type:"arthropod"},
+  {name:"Melanonotus powellorum",type:"arthropod"},
+  {name:"Nesonotus reticulatus",type:"arthropod"},
+  {name:"Orocharis sp.",type:"arthropod"},
+  {name:"Phalangopsis cf. longipes",type:"arthropod"},
+  {name:"Phymateus saxosus",type:"arthropod"},
+  {name:"Teleutias aduncus",type:"arthropod"},
+  {name:"Vestria sp.",type:"arthropod"},
+  {name:"Xerophyllopteryx fumosa",type:"arthropod"},
+  {name:"Anadenobolus leucostigma",type:"arthropod"},
+  {name:"Aphistogoniulus hova",type:"arthropod"},
+  {name:"Atopochetus caudulanus",type:"arthropod"},
+  {name:"Centrobolus richardi",type:"arthropod"},
+  {name:"Orthoporus lomontii",type:"arthropod"},
+  {name:"Orthoporus sp.",type:"arthropod"},
+  {name:"Sechelleptus sp.",type:"arthropod"},
+  {name:"Zoosphaerium neptunus",type:"arthropod"},
+  {name:"Charinus acosta",type:"arthropod"},
+  {name:"Charinus sp.",type:"arthropod"},
+  {name:"Heterophrynus alces",type:"arthropod"},
+  {name:"Heterophrynus longicornis",type:"arthropod"},
+  {name:"Paraphrynus laevifrons",type:"arthropod"},
+  {name:"Phrynus goesii",type:"arthropod"},
+  {name:"Armadillidae sp.",type:"arthropod"},
+  {name:"Armadillidium gestroi",type:"arthropod"},
+  {name:"Cubaris sp.",type:"arthropod"},
+  {name:"Leptotrichus panzeri",type:"arthropod"},
+  {name:"Porcellio dilatatus",type:"arthropod"},
+  {name:"Porcellio hoffmannseggii",type:"arthropod"},
+  {name:"Porcellio sp.",type:"arthropod"},
+  {name:"Trichorrhina tomentosa",type:"arthropod"},
+  {name:"Trichorrhina sp.",type:"arthropod"},
+  {name:"Venezillo sp.",type:"arthropod"},
+  {name:"Platymeris biguttatus",type:"arthropod"},
+  {name:"Psytalla horrida",type:"arthropod"},
+  {name:"Lophosaurus boydii",type:"reptile"},
+  {name:"Ouroborus cataphractus",type:"reptile"},
+  {name:"Saurodactylus brosseti",type:"reptile"},
+  {name:"Saurodactylus harrisii",type:"reptile"},
+  {name:"Sphaerodactylus elegans",type:"reptile"},
+  {name:"Sphaerodactylus torrei",type:"reptile"},
+  {name:"Ceratophrys cranwelli",type:"amphibian"},
+  {name:"Pyxicephalus adspersus",type:"amphibian"}
 ];
 
-const KEY="terranote_v14";
-
-const INITIAL_ANIMALS=SPECIES_CATALOG.map((s,i)=>({
+const INITIAL_ANIMALS = SPECIES_CATALOG.map((s,i)=>({
   id:`catalog_v14_${i+1}`,
   name:s.name,
   species:s.name,
@@ -92,325 +117,267 @@ const INITIAL_ANIMALS=SPECIES_CATALOG.map((s,i)=>({
   notes:""
 }));
 
-let db=JSON.parse(localStorage.getItem(KEY)||'{"animals":[],"events":[],"speciesRoutines":[],"reminders":[]}');
+let db;
 
-if(!Array.isArray(db.animals))db.animals=[];
-if(!Array.isArray(db.events))db.events=[];
-if(!Array.isArray(db.speciesRoutines))db.speciesRoutines=[];
-if(!Array.isArray(db.reminders))db.reminders=[];
-
-if(db.animals.length===0){
-  db.animals=INITIAL_ANIMALS.map(a=>({...a}));
-  localStorage.setItem(KEY,JSON.stringify(db));
+try {
+  db = JSON.parse(
+    localStorage.getItem(KEY) ||
+    '{"animals":[],"events":[],"speciesRoutines":[],"reminders":[]}'
+  );
+} catch(e) {
+  db = {
+    animals:[],
+    events:[],
+    speciesRoutines:[],
+    reminders:[]
+  };
 }
 
-const icons={
-  reptile:"🦎",
-  amphibian:"🐸",
-  gastropod:"🐌",
-  arthropod:"🪲"
-};
+if(!Array.isArray(db.animals)) db.animals=[];
+if(!Array.isArray(db.events)) db.events=[];
+if(!Array.isArray(db.speciesRoutines)) db.speciesRoutines=[];
+if(!Array.isArray(db.reminders)) db.reminders=[];
 
-const labels={
-  feeding:"Nourrissage",
-  watering:"Arrosage / brumisation",
-  weight:"Pesée",
-  waterChange:"Changement de l’eau",
-  note:"Note",
-  cleaning:"Nettoyage",
-  treatment:"Traitement",
-  molt:"Mue"
-};
-
+// Conversion des anciens groupes
 db.animals.forEach(a=>{
-  if(a.type==="invertebrate"||a.type==="insect"){
+  if(a.type==="insect" || a.type==="invertebrate"){
     a.type="arthropod";
   }
 });
 
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
-}[c]));
+// Si aucune donnée n'existe, charger les 75 animaux
+if(db.animals.length===0){
+  db.animals = INITIAL_ANIMALS.map(a=>({...a}));
+  persist();
+}
 
-const animal=id=>db.animals.find(a=>String(a.id)===String(id));
+// --------------------------------------------------
+// OUTILS
+// --------------------------------------------------
 
-function save(){
+function persist(){
   try{
     localStorage.setItem(KEY,JSON.stringify(db));
-    render();
-  }catch(err){
-    console.error(err);
+    return true;
+  }catch(error){
+    console.error("Erreur localStorage :",error);
     alert("Impossible d’enregistrer les données sur cet appareil.");
+    return false;
   }
 }
 
-function routineText(r){
-  return r.frequency==="daily"
-    ?`Tous les jours à ${r.time}`
-    :r.frequency==="weekly"
-      ?`Chaque semaine (${r.days||"à définir"}) à ${r.time}`
-      :`Tous les ${r.interval||1} jours à ${r.time}`;
+function esc(value){
+  return String(value ?? "").replace(/[&<>"']/g,char=>{
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[char];
+  });
 }
 
-function empty(t,p){
-  return `<div class="card"><b>${t}</b><p class="muted">${p}</p></div>`;
+function getAnimal(id){
+  return db.animals.find(
+    a=>String(a.id)===String(id)
+  );
 }
 
-function openModal(html){
-  const content=document.getElementById("modalContent");
-  const modal=document.getElementById("modal");
-  if(!content||!modal)return;
-  content.innerHTML=html;
-  modal.classList.remove("hidden");
+function newId(){
+  if(window.crypto && crypto.randomUUID){
+    return crypto.randomUUID();
+  }
+  return "animal_"+Date.now()+"_"+Math.random().toString(36).slice(2);
 }
 
 function closeModal(){
   const modal=document.getElementById("modal");
-  if(modal)modal.classList.add("hidden");
+  if(modal){
+    modal.classList.add("hidden");
+  }
 }
 
-const closeButton=document.getElementById("closeModal");
-if(closeButton)closeButton.onclick=closeModal;
+function openModal(content){
+  const modal=document.getElementById("modal");
+  const box=document.getElementById("modalContent");
 
-document.querySelectorAll(".nav").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
+  if(!modal || !box){
+    console.error("Modal introuvable.");
+    return;
+  }
 
-    document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  box.innerHTML=content;
+  modal.classList.remove("hidden");
+}
 
-    const page=document.getElementById(b.dataset.page);
-    if(page)page.classList.add("active");
-  };
+function empty(title,text){
+  return `
+    <div class="card">
+      <b>${esc(title)}</b>
+      <p class="muted">${esc(text)}</p>
+    </div>
+  `;
+}
+
+// --------------------------------------------------
+// NAVIGATION
+// --------------------------------------------------
+
+document.querySelectorAll(".nav").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll(".nav")
+      .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    document.querySelectorAll(".page")
+      .forEach(page=>page.classList.remove("active"));
+
+    const page=document.getElementById(
+      button.dataset.page
+    );
+
+    if(page){
+      page.classList.add("active");
+    }
+  });
 });
 
-function eventHTML(arr){
-  if(!arr.length){
-    return empty(
-      "Pas encore d’activité",
-      "Tes nourrissages, arrosages et observations apparaîtront ici."
-    );
-  }
+// --------------------------------------------------
+// MODAL
+// --------------------------------------------------
 
-  return arr.map(e=>{
-    const a=animal(e.animalId);
+const closeButton=document.getElementById("closeModal");
 
-    return `<div class="event">
-      <div>
-        <b>${labels[e.kind]||e.kind} · ${esc(a?.name||"Animal supprimé")}</b>
-        <span class="muted">
-          ${esc(e.details||"")}
-          ${e.value?` · ${esc(e.value)}`:""}
-        </span>
-      </div>
-      <span class="muted">
-        ${new Intl.DateTimeFormat("fr-FR",{
-          day:"2-digit",
-          month:"2-digit",
-          hour:"2-digit",
-          minute:"2-digit"
-        }).format(new Date(e.date))}
-      </span>
-    </div>`;
-  }).join("");
+if(closeButton){
+  closeButton.addEventListener("click",closeModal);
 }
 
-function card(a){
+const modal=document.getElementById("modal");
+
+if(modal){
+  modal.addEventListener("click",event=>{
+    if(event.target===modal){
+      closeModal();
+    }
+  });
+}
+
+// --------------------------------------------------
+// CARTES ANIMAUX
+// --------------------------------------------------
+
+function animalCard(a){
+
+  const birth=a.birthDate
+    ? `🎂 ${new Intl.DateTimeFormat("fr-FR").format(
+        new Date(a.birthDate+"T00:00:00")
+      )}`
+    : "";
+
+  const location=a.location
+    ? `📍 ${esc(a.location)}`
+    : "";
+
+  const origin=a.origin
+    ? `📄 ${esc(a.origin)}`
+    : "";
+
   const meta=[
-    a.birthDate
-      ?`🎂 ${new Intl.DateTimeFormat("fr-FR").format(new Date(a.birthDate+"T00:00:00"))}`
-      :"",
-    a.location
-      ?`📍 ${esc(a.location)}`
-      :"",
-    a.origin
-      ?`📄 ${esc(a.origin)}`
-      :""
+    birth,
+    location,
+    origin
   ].filter(Boolean).join(" · ");
 
-  return `<div class="card animalCard" data-id="${esc(a.id)}" style="cursor:pointer">
-    <div class="animal">
-      <div class="avatar">${icons[a.type]||"🐾"}</div>
-      <div>
-        <b>${esc(a.name||"Sans nom")}</b>
-        <div class="muted">
-          ${esc(a.species||"")} · ${esc(typeLabels[a.type]||a.type||"")}
+  return `
+    <div
+      class="card animalCard"
+      data-id="${esc(a.id)}"
+      style="cursor:pointer"
+    >
+
+      <div class="animal">
+
+        <div class="avatar">
+          ${icons[a.type] || "🐾"}
         </div>
-      </div>
-    </div>
 
-    ${meta?`<p class="muted">${meta}</p>`:""}
-
-    ${a.notes?`<p class="muted">📝 ${esc(a.notes)}</p>`:""}
-
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button
-        type="button"
-        class="primary editAnimal"
-        data-id="${esc(a.id)}"
-        style="flex:1"
-      >
-        Modifier
-      </button>
-
-      <button
-        type="button"
-        class="ghost animalAction"
-        data-id="${esc(a.id)}"
-        style="flex:1"
-      >
-        Ajouter une activité
-      </button>
-
-      <button
-        type="button"
-        class="ghost deleteAnimal"
-        data-id="${esc(a.id)}"
-        title="Supprimer cet animal"
-      >
-        🗑️
-      </button>
-    </div>
-  </div>`;
-}
-
-function renderRoutines(){
-  const el=document.getElementById("routineList");
-  if(!el)return;
-
-  el.innerHTML=db.speciesRoutines.length
-    ?db.speciesRoutines.map(r=>`
-      <div class="event">
         <div>
-          <b>${esc(labels[r.kind]||r.kind)} · ${esc(r.species)}</b>
-          <span class="muted">${esc(routineText(r))}</span>
+          <b>${esc(a.name || "Sans nom")}</b>
+
+          <div class="muted">
+            ${esc(a.species || "")}
+            ·
+            ${esc(typeLabels[a.type] || "Arthropodes")}
+          </div>
         </div>
-        <button type="button" class="ghost deleteRoutine" data-id="${esc(r.id)}">
-          Supprimer
-        </button>
+
       </div>
-    `).join("")
-    :empty(
-      "Aucune routine",
-      "Crée une routine pour programmer automatiquement tes rappels."
-    );
-}
 
-function dueForRoutine(r,a){
-  const now=new Date();
-  const key=`${a.id}_${r.id}`;
+      ${
+        meta
+          ? `<p class="muted">${meta}</p>`
+          : ""
+      }
 
-  const existing=db.reminders.find(
-    x=>x.key===key&&!x.done
-  );
+      ${
+        a.notes
+          ? `<p class="muted">📝 ${esc(a.notes)}</p>`
+          : ""
+      }
 
-  if(existing)return existing;
-
-  let due=new Date(now);
-
-  const [h,m]=(r.time||"18:00").split(":").map(Number);
-
-  due.setHours(h,m,0,0);
-
-  if(r.frequency==="interval"){
-    due.setDate(
-      due.getDate()+(Number(r.interval)||1)-1
-    );
-  }
-
-  if(due>now){
-    due.setDate(due.getDate()-1);
-  }
-
-  if(r.frequency==="weekly"&&r.days){
-    due.setDate(
-      due.getDate()-((due.getDay()+6)%7)
-    );
-  }
-
-  return {
-    id:crypto.randomUUID(),
-    key,
-    animalId:a.id,
-    routineId:r.id,
-    due:due.toISOString(),
-    done:false
-  };
-}
-
-function renderToday(){
-  const el=document.getElementById("todayReminders");
-  if(!el)return;
-
-  db.animals.forEach(a=>{
-    db.speciesRoutines
-      .filter(r=>
-        String(r.species||"").toLowerCase()===
-        String(a.species||"").toLowerCase()
-      )
-      .forEach(r=>{
-        const x=dueForRoutine(r,a);
-
-        if(!db.reminders.some(
-          z=>z.key===x.key&&!z.done
-        )){
-          db.reminders.push(x);
-        }
-      });
-  });
-
-  const now=Date.now();
-
-  const active=db.reminders.filter(
-    x=>!x.done&&new Date(x.due).getTime()<=now
-  );
-
-  el.innerHTML=active.length
-    ?active.map(x=>{
-      const a=animal(x.animalId);
-      const r=db.speciesRoutines.find(
-        z=>z.id===x.routineId
-      );
-
-      return `<div class="event">
-        <div>
-          <b>
-            ⏰ ${esc(labels[r?.kind]||r?.kind)} ·
-            ${esc(a?.name||"")}
-          </b>
-          <span class="muted">
-            ${esc(r?.species||"")} ·
-            ${new Date(x.due).toLocaleTimeString(
-              "fr-FR",
-              {hour:"2-digit",minute:"2-digit"}
-            )}
-          </span>
-        </div>
+      <div
+        style="
+          display:flex;
+          gap:8px;
+          margin-top:10px;
+          flex-wrap:wrap;
+        "
+      >
 
         <button
           type="button"
-          class="primary doneReminder"
-          data-id="${esc(x.id)}"
+          class="primary editAnimal"
+          data-id="${esc(a.id)}"
+          style="flex:1"
         >
-          ✓ Fait
+          Modifier
         </button>
-      </div>`;
-    }).join("")
-    :empty(
-      "Rien à faire",
-      "Tous les rappels sont à jour."
-    );
+
+        <button
+          type="button"
+          class="ghost animalAction"
+          data-id="${esc(a.id)}"
+          style="flex:1"
+        >
+          Activité
+        </button>
+
+        <button
+          type="button"
+          class="ghost deleteAnimal"
+          data-id="${esc(a.id)}"
+        >
+          🗑️
+        </button>
+
+      </div>
+
+    </div>
+  `;
 }
 
-function render(){
-  const todayTitle=document.getElementById("todayTitle");
+// --------------------------------------------------
+// AFFICHAGE
+// --------------------------------------------------
 
-  if(todayTitle){
-    todayTitle.textContent=
+function render(){
+
+  const title=document.getElementById("todayTitle");
+
+  if(title){
+    title.textContent=
       new Intl.DateTimeFormat("fr-FR",{
         weekday:"long",
         day:"numeric",
@@ -420,61 +387,562 @@ function render(){
 
   const today=new Date().toDateString();
 
+  const todayEvents=db.events.filter(event=>{
+    return new Date(event.date).toDateString()===today;
+  });
+
   const summary=document.getElementById("summary");
 
   if(summary){
     summary.textContent=
-      `${db.animals.length} animaux suivi${db.animals.length>1?"s":""} · `+
-      `${db.events.filter(e=>new Date(e.date).toDateString()===today).length} activité(s) aujourd’hui`;
+      `${db.animals.length} animaux suivis · `+
+      `${todayEvents.length} activité(s) aujourd’hui`;
   }
 
-  const cards=
-    db.animals.map(a=>card(a)).join("")||
-    empty(
-      "Aucun animal",
-      "Ajoute ton premier animal pour commencer."
-    );
+  const cards=db.animals
+    .map(animalCard)
+    .join("");
 
   const animalGrid=document.getElementById("animalGrid");
   const allAnimals=document.getElementById("allAnimals");
 
-  if(animalGrid)animalGrid.innerHTML=cards;
-  if(allAnimals)allAnimals.innerHTML=cards;
+  if(animalGrid){
+    animalGrid.innerHTML=
+      cards ||
+      empty(
+        "Aucun animal",
+        "Ajoute ton premier animal pour commencer."
+      );
+  }
 
-  const sortedEvents=db.events
-    .slice()
-    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(allAnimals){
+    allAnimals.innerHTML=
+      cards ||
+      empty(
+        "Aucun animal",
+        "Ajoute ton premier animal pour commencer."
+      );
+  }
+
+  renderEvents();
+  renderRoutines();
+  renderReminders();
+}
+
+// --------------------------------------------------
+// HISTORIQUE
+// --------------------------------------------------
+
+function renderEvents(){
+
+  const sorted=[...db.events].sort(
+    (a,b)=>new Date(b.date)-new Date(a.date)
+  );
+
+  const html=sorted.length
+    ? sorted.map(event=>{
+        const a=getAnimal(event.animalId);
+
+        const date=new Date(event.date);
+
+        return `
+          <div class="event">
+
+            <div>
+
+              <b>
+                ${esc(labels[event.kind] || event.kind)}
+                ·
+                ${esc(a?.name || a?.species || "Animal")}
+              </b>
+
+              <span class="muted">
+                ${esc(event.details || "")}
+                ${event.value
+                  ? ` · ${esc(event.value)}`
+                  : ""
+                }
+              </span>
+
+            </div>
+
+            <span class="muted">
+              ${new Intl.DateTimeFormat("fr-FR",{
+                day:"2-digit",
+                month:"2-digit",
+                hour:"2-digit",
+                minute:"2-digit"
+              }).format(date)}
+            </span>
+
+          </div>
+        `;
+      }).join("")
+    : empty(
+        "Pas encore d’activité",
+        "Tes activités apparaîtront ici."
+      );
 
   const recent=document.getElementById("recent");
   const history=document.getElementById("historyList");
 
   if(recent){
     recent.innerHTML=
-      eventHTML(sortedEvents.slice(0,6));
+      sorted.slice(0,6).map(event=>{
+        const a=getAnimal(event.animalId);
+
+        return `
+          <div class="event">
+
+            <div>
+              <b>
+                ${esc(labels[event.kind] || event.kind)}
+                ·
+                ${esc(a?.name || a?.species || "Animal")}
+              </b>
+
+              <span class="muted">
+                ${esc(event.details || "")}
+              </span>
+            </div>
+
+            <span class="muted">
+              ${new Intl.DateTimeFormat("fr-FR",{
+                day:"2-digit",
+                month:"2-digit",
+                hour:"2-digit",
+                minute:"2-digit"
+              }).format(new Date(event.date))}
+            </span>
+
+          </div>
+        `;
+      }).join("") ||
+      empty(
+        "Pas encore d’activité",
+        "Tes activités apparaîtront ici."
+      );
   }
 
   if(history){
-    history.innerHTML=
-      eventHTML(sortedEvents);
+    history.innerHTML=html;
   }
-
-  renderRoutines();
-  renderToday();
 }
 
-const addAnimal=document.getElementById("addAnimal");
+// --------------------------------------------------
+// FICHE ANIMAL
+// --------------------------------------------------
 
-if(addAnimal){
-  addAnimal.onclick=()=>{
+function openAnimalEditor(id){
+
+  const a=getAnimal(id);
+
+  if(!a){
+    alert("Animal introuvable.");
+    return;
+  }
+
+  const speciesOptions=SPECIES_CATALOG
+    .map(s=>`
+      <option value="${esc(s.name)}"></option>
+    `)
+    .join("");
+
+  openModal(`
+
+    <h2>Modifier l’animal</h2>
+
+    <form id="editAnimalForm">
+
+      <input
+        type="hidden"
+        name="id"
+        value="${esc(a.id)}"
+      >
+
+      <label>Nom / identifiant</label>
+
+      <input
+        name="name"
+        value="${esc(a.name || "")}"
+        placeholder="Ex. Kiwi"
+      >
+
+      <label>Espèce</label>
+
+      <input
+        name="species"
+        value="${esc(a.species || "")}"
+        list="editSpeciesList"
+        required
+        autocomplete="off"
+      >
+
+      <datalist id="editSpeciesList">
+        ${speciesOptions}
+      </datalist>
+
+      <label>Groupe</label>
+
+      <select name="type">
+
+        <option
+          value="reptile"
+          ${a.type==="reptile" ? "selected" : ""}
+        >
+          Reptiles
+        </option>
+
+        <option
+          value="amphibian"
+          ${a.type==="amphibian" ? "selected" : ""}
+        >
+          Amphibiens
+        </option>
+
+        <option
+          value="gastropod"
+          ${a.type==="gastropod" ? "selected" : ""}
+        >
+          Gastéropodes
+        </option>
+
+        <option
+          value="arthropod"
+          ${
+            a.type==="arthropod" ||
+            a.type==="insect" ||
+            a.type==="invertebrate"
+              ? "selected"
+              : ""
+          }
+        >
+          Arthropodes
+        </option>
+
+      </select>
+
+      <label>Date de naissance</label>
+
+      <input
+        name="birthDate"
+        type="date"
+        value="${esc(a.birthDate || "")}"
+      >
+
+      <label>Localisation</label>
+
+      <input
+        name="location"
+        value="${esc(a.location || "")}"
+        placeholder="Ex. Terrarium 3"
+      >
+
+      <label>Certificat d’origine</label>
+
+      <select name="origin">
+
+        <option
+          value="NC"
+          ${a.origin==="NC" || !a.origin ? "selected" : ""}
+        >
+          NC
+        </option>
+
+        <option
+          value="WC"
+          ${a.origin==="WC" ? "selected" : ""}
+        >
+          WC
+        </option>
+
+      </select>
+
+      <label>Notes</label>
+
+      <textarea
+        name="notes"
+        placeholder="Informations supplémentaires..."
+      >${esc(a.notes || "")}</textarea>
+
+      <div class="formActions">
+
+        <button
+          type="button"
+          class="ghost"
+          id="cancelEditAnimal"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          class="primary"
+          id="saveAnimalButton"
+        >
+          Enregistrer
+        </button>
+
+      </div>
+
+    </form>
+  `);
+
+  // ------------------------------------------------
+  // SAUVEGARDE DIRECTE DE LA FICHE
+  // ------------------------------------------------
+
+  const saveButton=
+    document.getElementById("saveAnimalButton");
+
+  if(!saveButton){
+    console.error("Bouton saveAnimalButton introuvable.");
+    return;
+  }
+
+  saveButton.addEventListener("click",()=>{
+
+    const form=
+      document.getElementById("editAnimalForm");
+
+    if(!form){
+      alert("Formulaire introuvable.");
+      return;
+    }
+
+    const nameInput=
+      form.querySelector('[name="name"]');
+
+    const speciesInput=
+      form.querySelector('[name="species"]');
+
+    const typeInput=
+      form.querySelector('[name="type"]');
+
+    const birthInput=
+      form.querySelector('[name="birthDate"]');
+
+    const locationInput=
+      form.querySelector('[name="location"]');
+
+    const originInput=
+      form.querySelector('[name="origin"]');
+
+    const notesInput=
+      form.querySelector('[name="notes"]');
+
+    const species=
+      speciesInput
+        ? speciesInput.value.trim()
+        : "";
+
+    if(!species){
+      alert("L’espèce est obligatoire.");
+      return;
+    }
+
+    // Modification directe de l'objet existant
+    a.name=
+      nameInput
+        ? nameInput.value.trim()
+        : "";
+
+    a.species=species;
+
+    a.type=
+      typeInput
+        ? typeInput.value
+        : "arthropod";
+
+    a.birthDate=
+      birthInput
+        ? birthInput.value
+        : "";
+
+    a.location=
+      locationInput
+        ? locationInput.value.trim()
+        : "";
+
+    a.origin=
+      originInput
+        ? originInput.value
+        : "NC";
+
+    a.notes=
+      notesInput
+        ? notesInput.value.trim()
+        : "";
+
+    // Ecriture immédiate dans localStorage
+    try{
+
+      const data=JSON.stringify(db);
+
+      localStorage.setItem(KEY,data);
+
+      // Vérification réelle de l'écriture
+      const verification=
+        localStorage.getItem(KEY);
+
+      if(!verification){
+        throw new Error(
+          "localStorage vide après sauvegarde"
+        );
+      }
+
+      const check=JSON.parse(verification);
+
+      const saved=check.animals.find(
+        x=>String(x.id)===String(a.id)
+      );
+
+      if(!saved){
+        throw new Error(
+          "Animal absent après sauvegarde"
+        );
+      }
+
+      if(saved.location!==a.location){
+        throw new Error(
+          "Localisation non sauvegardée"
+        );
+      }
+
+    }catch(error){
+
+      console.error(
+        "ERREUR SAUVEGARDE ANIMAL:",
+        error
+      );
+
+      alert(
+        "La sauvegarde a échoué.\n\n"+
+        error.message
+      );
+
+      return;
+    }
+
+    // Mise à jour immédiate de l'écran
+    render();
+
+    closeModal();
+
+  });
+
+  const cancelButton=
+    document.getElementById("cancelEditAnimal");
+
+  if(cancelButton){
+    cancelButton.addEventListener(
+      "click",
+      closeModal
+    );
+  }
+}
+
+// --------------------------------------------------
+// CLIC SUR UN ANIMAL
+// --------------------------------------------------
+
+document.addEventListener("click",event=>{
+
+  const editButton=
+    event.target.closest(".editAnimal");
+
+  if(editButton){
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    openAnimalEditor(
+      editButton.dataset.id
+    );
+
+    return;
+  }
+
+  const card=
+    event.target.closest(".animalCard");
+
+  if(card){
+
+    const ignored=
+      event.target.closest(
+        ".animalAction,.deleteAnimal"
+      );
+
+    if(!ignored){
+
+      openAnimalEditor(
+        card.dataset.id
+      );
+
+    }
+  }
+
+});
+
+// --------------------------------------------------
+// SUPPRESSION ANIMAL
+// --------------------------------------------------
+
+document.addEventListener("click",event=>{
+
+  const button=
+    event.target.closest(".deleteAnimal");
+
+  if(!button)return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const a=getAnimal(button.dataset.id);
+
+  if(!a)return;
+
+  const ok=confirm(
+    `Supprimer ${a.name || a.species} ?\n\n`+
+    "Ses activités seront également supprimées."
+  );
+
+  if(!ok)return;
+
+  db.animals=db.animals.filter(
+    x=>String(x.id)!==String(a.id)
+  );
+
+  db.events=db.events.filter(
+    x=>String(x.animalId)!==String(a.id)
+  );
+
+  db.reminders=db.reminders.filter(
+    x=>String(x.animalId)!==String(a.id)
+  );
+
+  persist();
+  render();
+});
+
+// --------------------------------------------------
+// AJOUT D'UN ANIMAL
+// --------------------------------------------------
+
+const addAnimalButton=
+  document.getElementById("addAnimal");
+
+if(addAnimalButton){
+
+  addAnimalButton.addEventListener("click",()=>{
+
     openModal(`
+
       <h2>Nouvel animal</h2>
 
-      <form id="animalForm">
+      <form id="newAnimalForm">
 
-        <label>
-          Nom / identifiant
-          <span class="muted">(optionnel)</span>
-        </label>
+        <label>Nom / identifiant</label>
 
         <input
           name="name"
@@ -484,58 +952,72 @@ if(addAnimal){
         <label>Espèce</label>
 
         <input
-          id="speciesSearch"
           name="species"
+          id="newSpecies"
+          list="newSpeciesList"
           required
-          list="speciesSuggestions"
-          autocomplete="off"
           placeholder="Ex. Pogona vitticeps"
         >
 
-        <datalist id="speciesSuggestions">
-          ${SPECIES_CATALOG.map(x=>
-            `<option value="${esc(x.name)}"></option>`
-          ).join("")}
-        </datalist>
+        <datalist id="newSpeciesList">
 
-        <small class="muted">
-          Choisis une espèce de ton catalogue ou tape un autre nom.
-        </small>
+          ${SPECIES_CATALOG.map(s=>`
+            <option value="${esc(s.name)}"></option>
+          `).join("")}
+
+        </datalist>
 
         <label>Groupe</label>
 
-        <select id="animalType" name="type">
-          <option value="reptile">Reptiles</option>
-          <option value="amphibian">Amphibiens</option>
-          <option value="gastropod">Gastéropodes</option>
-          <option value="arthropod">Arthropodes</option>
+        <select name="type" id="newAnimalType">
+
+          <option value="reptile">
+            Reptiles
+          </option>
+
+          <option value="amphibian">
+            Amphibiens
+          </option>
+
+          <option value="gastropod">
+            Gastéropodes
+          </option>
+
+          <option value="arthropod" selected>
+            Arthropodes
+          </option>
+
         </select>
 
-        <label>
-          Date de naissance
-          <span class="muted">(optionnel)</span>
-        </label>
+        <label>Date de naissance</label>
 
-        <input name="birthDate" type="date">
+        <input
+          name="birthDate"
+          type="date"
+        >
 
         <label>Localisation</label>
 
         <input
           name="location"
-          placeholder="Ex. Salle reptiles, terrarium 3..."
+          placeholder="Ex. Terrarium 3"
         >
 
         <label>Certificat d’origine</label>
 
         <select name="origin">
-          <option value="NC">NC</option>
-          <option value="WC">WC</option>
+
+          <option value="NC">
+            NC
+          </option>
+
+          <option value="WC">
+            WC
+          </option>
+
         </select>
 
-        <label>
-          Notes
-          <span class="muted">(optionnel)</span>
-        </label>
+        <label>Notes</label>
 
         <textarea
           name="notes"
@@ -543,146 +1025,375 @@ if(addAnimal){
         ></textarea>
 
         <div class="formActions">
+
           <button
             type="button"
             class="ghost"
-            onclick="closeModal()"
+            id="cancelNewAnimal"
           >
             Annuler
           </button>
 
           <button
-            type="submit"
+            type="button"
             class="primary"
+            id="createAnimalButton"
           >
             Créer
           </button>
+
         </div>
 
       </form>
     `);
-  };
-}
 
-document.addEventListener("input",async e=>{
-  if(e.target.id!=="speciesSearch")return;
-
-  const q=String(e.target.value||"").trim();
-
-  const list=document.getElementById("speciesSuggestions");
-  const type=document.getElementById("animalType");
-
-  if(!list)return;
-
-  const local=SPECIES_CATALOG
-    .filter(x=>
-      x.name.toLowerCase().includes(
-        q.toLowerCase()
-      )
-    )
-    .slice(0,30);
-
-  list.innerHTML=
-    local.map(x=>
-      `<option value="${esc(x.name)}"></option>`
-    ).join("");
-
-  const match=SPECIES_CATALOG.find(x=>
-    x.name.toLowerCase()===q.toLowerCase()
-  );
-
-  if(match&&type){
-    type.value=match.type;
-  }
-
-  if(q.length<2)return;
-
-  clearTimeout(window._speciesTimer);
-
-  window._speciesTimer=setTimeout(async()=>{
-    try{
-      const r=await fetch(
-        "https://api.gbif.org/v1/species/suggest?q="+
-        encodeURIComponent(q)+
-        "&rank=SPECIES&limit=20"
+    const createButton=
+      document.getElementById(
+        "createAnimalButton"
       );
 
-      const data=await r.json();
+    if(createButton){
 
-      const names=[
-        ...new Set([
-          ...local.map(x=>x.name),
-          ...data
-            .filter(x=>x.rank==="SPECIES")
-            .map(x=>x.canonicalName||x.scientificName||"")
-            .filter(Boolean)
-        ])
-      ].slice(0,40);
+      createButton.addEventListener("click",()=>{
 
-      list.innerHTML=
-        names.map(x=>
-          `<option value="${esc(x)}"></option>`
-        ).join("");
+        const form=
+          document.getElementById("newAnimalForm");
 
-    }catch(err){}
-  },300);
+        if(!form)return;
+
+        const name=
+          form.querySelector('[name="name"]').value.trim();
+
+        const species=
+          form.querySelector('[name="species"]').value.trim();
+
+        if(!species){
+          alert("L’espèce est obligatoire.");
+          return;
+        }
+
+        const animal={
+          id:newId(),
+          name:name,
+          species:species,
+          type:form.querySelector('[name="type"]').value,
+          birthDate:form.querySelector('[name="birthDate"]').value,
+          location:form.querySelector('[name="location"]').value.trim(),
+          origin:form.querySelector('[name="origin"]').value,
+          notes:form.querySelector('[name="notes"]').value.trim()
+        };
+
+        db.animals.push(animal);
+
+        if(!persist()){
+          return;
+        }
+
+        render();
+        closeModal();
+
+      });
+
+    }
+
+    const cancel=
+      document.getElementById("cancelNewAnimal");
+
+    if(cancel){
+      cancel.addEventListener(
+        "click",
+        closeModal
+      );
+    }
+
+  });
+}
+
+// --------------------------------------------------
+// AUTO-GROUPEMENT PAR ESPÈCE
+// --------------------------------------------------
+
+document.addEventListener("input",event=>{
+
+  if(event.target.id!=="newSpecies")return;
+
+  const value=
+    event.target.value.trim().toLowerCase();
+
+  const match=
+    SPECIES_CATALOG.find(
+      s=>s.name.toLowerCase()===value
+    );
+
+  if(match){
+
+    const type=
+      document.getElementById(
+        "newAnimalType"
+      );
+
+    if(type){
+      type.value=match.type;
+    }
+
+  }
+
 });
 
-document.addEventListener("submit",e=>{
-  if(e.target.id!=="animalForm")return;
+// --------------------------------------------------
+// ACTIVITÉS
+// --------------------------------------------------
 
-  e.preventDefault();
-  e.stopPropagation();
+function openActivity(kind,animalId=null){
 
-  if(e.target.dataset.saving==="1")return;
+  if(!db.animals.length){
 
-  e.target.dataset.saving="1";
+    openModal(`
+      <h2>Aucun animal</h2>
+      <p class="muted">
+        Ajoute d’abord un animal.
+      </p>
+    `);
 
-  const submit=
-    e.target.querySelector('button[type="submit"]');
-
-  if(submit)submit.disabled=true;
-
-  const f=new FormData(e.target);
-
-  const name=
-    String(f.get("name")||"").trim();
-
-  const species=
-    String(f.get("species")||"").trim();
-
-  if(!species){
-    e.target.dataset.saving="0";
-    if(submit)submit.disabled=false;
     return;
   }
 
-  db.animals.push({
-    id:crypto.randomUUID(),
-    name,
-    species,
-    type:String(f.get("type")||"arthropod"),
-    birthDate:String(f.get("birthDate")||""),
-    location:String(f.get("location")||"").trim(),
-    origin:String(f.get("origin")||"NC"),
-    notes:String(f.get("notes")||"").trim()
+  const options=db.animals.map(a=>`
+    <option
+      value="${esc(a.id)}"
+      ${
+        String(a.id)===String(animalId)
+          ? "selected"
+          : ""
+      }
+    >
+      ${esc(a.name || "Sans nom")}
+      — ${esc(a.species)}
+    </option>
+  `).join("");
+
+  const now=new Date();
+
+  const localDate=
+    new Date(
+      now.getTime()-
+      now.getTimezoneOffset()*60000
+    )
+    .toISOString()
+    .slice(0,16);
+
+  openModal(`
+
+    <h2>${esc(labels[kind] || "Activité")}</h2>
+
+    <form id="activityForm">
+
+      <label>Animal</label>
+
+      <select name="animalId">
+        ${options}
+      </select>
+
+      <label>Détail</label>
+
+      <input
+        name="details"
+        placeholder="Ex. 3 grillons"
+      >
+
+      <label>Valeur</label>
+
+      <input
+        name="value"
+        placeholder="Ex. 480 g"
+      >
+
+      <label>Date et heure</label>
+
+      <input
+        name="date"
+        type="datetime-local"
+        value="${localDate}"
+      >
+
+      <div class="formActions">
+
+        <button
+          type="button"
+          class="ghost"
+          id="cancelActivity"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          class="primary"
+          id="saveActivity"
+        >
+          Enregistrer
+        </button>
+
+      </div>
+
+    </form>
+  `);
+
+  const saveActivity=
+    document.getElementById("saveActivity");
+
+  if(saveActivity){
+
+    saveActivity.addEventListener("click",()=>{
+
+      const form=
+        document.getElementById("activityForm");
+
+      if(!form)return;
+
+      const dateValue=
+        form.querySelector('[name="date"]').value;
+
+      let date;
+
+      if(dateValue){
+        date=new Date(dateValue).toISOString();
+      }else{
+        date=new Date().toISOString();
+      }
+
+      db.events.push({
+        id:newId(),
+        animalId:
+          form.querySelector('[name="animalId"]').value,
+        kind:kind,
+        details:
+          form.querySelector('[name="details"]').value.trim(),
+        value:
+          form.querySelector('[name="value"]').value.trim(),
+        date:date
+      });
+
+      persist();
+      render();
+      closeModal();
+
+    });
+
+  }
+
+  const cancel=
+    document.getElementById("cancelActivity");
+
+  if(cancel){
+    cancel.addEventListener(
+      "click",
+      closeModal
+    );
+  }
+}
+
+// Boutons rapides
+document.querySelectorAll("[data-action]").forEach(button=>{
+
+  button.addEventListener("click",()=>{
+    openActivity(
+      button.dataset.action
+    );
   });
 
-  save();
-  closeModal();
 });
 
-if(document.getElementById("addRoutine")){
-  document.getElementById("addRoutine").onclick=()=>{
+// Bouton activité sur carte
+document.addEventListener("click",event=>{
 
-    if(!db.animals.length){
-      return openModal(`
-        <h2>Ajoute d’abord un animal</h2>
-        <p class="muted">
-          Crée au moins un animal avant de programmer une routine.
-        </p>
-      `);
-    }
+  const button=
+    event.target.closest(".animalAction");
+
+  if(!button)return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  openActivity(
+    "note",
+    button.dataset.id
+  );
+
+});
+
+// --------------------------------------------------
+// ROUTINES
+// --------------------------------------------------
+
+function routineText(r){
+
+  if(r.frequency==="daily"){
+    return `Tous les jours à ${r.time}`;
+  }
+
+  if(r.frequency==="weekly"){
+    return `Chaque semaine à ${r.time}`;
+  }
+
+  return `Tous les ${r.interval || 1} jours à ${r.time}`;
+}
+
+function renderRoutines(){
+
+  const list=
+    document.getElementById("routineList");
+
+  if(!list)return;
+
+  if(!db.speciesRoutines.length){
+
+    list.innerHTML=empty(
+      "Aucune routine",
+      "Crée une routine pour programmer tes rappels."
+    );
+
+    return;
+  }
+
+  list.innerHTML=
+    db.speciesRoutines.map(r=>`
+
+      <div class="event">
+
+        <div>
+
+          <b>
+            ${esc(labels[r.kind] || r.kind)}
+            ·
+            ${esc(r.species)}
+          </b>
+
+          <span class="muted">
+            ${esc(routineText(r))}
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="ghost deleteRoutine"
+          data-id="${esc(r.id)}"
+        >
+          Supprimer
+        </button>
+
+      </div>
+
+    `).join("");
+}
+
+const addRoutine=
+  document.getElementById("addRoutine");
+
+if(addRoutine){
+
+  addRoutine.addEventListener("click",()=>{
 
     const species=[
       ...new Set(
@@ -690,7 +1401,20 @@ if(document.getElementById("addRoutine")){
       )
     ];
 
+    if(!species.length){
+
+      openModal(`
+        <h2>Aucun animal</h2>
+        <p class="muted">
+          Ajoute d’abord un animal.
+        </p>
+      `);
+
+      return;
+    }
+
     openModal(`
+
       <h2>Nouvelle routine</h2>
 
       <form id="routineForm">
@@ -698,30 +1422,60 @@ if(document.getElementById("addRoutine")){
         <label>Espèce</label>
 
         <select name="species">
-          ${species.map(x=>
-            `<option>${esc(x)}</option>`
-          ).join("")}
+
+          ${species.map(s=>`
+            <option value="${esc(s)}">
+              ${esc(s)}
+            </option>
+          `).join("")}
+
         </select>
 
         <label>Action</label>
 
         <select name="kind">
-          <option value="feeding">Nourrissage</option>
-          <option value="watering">Arrosage / brumisation</option>
-          <option value="waterChange">Changement de l’eau</option>
-          <option value="cleaning">Nettoyage</option>
-          <option value="note">Observation</option>
+
+          <option value="feeding">
+            Nourrissage
+          </option>
+
+          <option value="watering">
+            Arrosage / brumisation
+          </option>
+
+          <option value="waterChange">
+            Changement de l’eau
+          </option>
+
+          <option value="cleaning">
+            Nettoyage
+          </option>
+
+          <option value="note">
+            Observation
+          </option>
+
         </select>
 
         <label>Fréquence</label>
 
         <select name="frequency">
-          <option value="daily">Tous les jours</option>
-          <option value="weekly">Chaque semaine</option>
-          <option value="interval">Tous les X jours</option>
+
+          <option value="daily">
+            Tous les jours
+          </option>
+
+          <option value="weekly">
+            Chaque semaine
+          </option>
+
+          <option value="interval">
+            Tous les X jours
+          </option>
+
         </select>
 
-        <label>Intervalle (si X jours)</label>
+        <label>Intervalle</label>
 
         <input
           name="interval"
@@ -738,26 +1492,20 @@ if(document.getElementById("addRoutine")){
           value="18:00"
         >
 
-        <label>Jours (si hebdomadaire)</label>
-
-        <input
-          name="days"
-          placeholder="Lundi, mercredi, vendredi"
-        >
-
         <div class="formActions">
 
           <button
             type="button"
             class="ghost"
-            onclick="closeModal()"
+            id="cancelRoutine"
           >
             Annuler
           </button>
 
           <button
-            type="submit"
+            type="button"
             class="primary"
+            id="saveRoutine"
           >
             Créer
           </button>
@@ -766,587 +1514,248 @@ if(document.getElementById("addRoutine")){
 
       </form>
     `);
-  };
-}
 
-document.addEventListener("submit",e=>{
-  if(e.target.id!=="routineForm")return;
+    const saveRoutine=
+      document.getElementById("saveRoutine");
 
-  e.preventDefault();
-  e.stopPropagation();
+    if(saveRoutine){
 
-  const f=new FormData(e.target);
+      saveRoutine.addEventListener("click",()=>{
 
-  db.speciesRoutines.push({
-    id:crypto.randomUUID(),
-    species:String(f.get("species")||""),
-    kind:String(f.get("kind")||"note"),
-    frequency:String(f.get("frequency")||"daily"),
-    interval:Number(f.get("interval")||1),
-    time:String(f.get("time")||"18:00"),
-    days:String(f.get("days")||"")
-  });
+        const form=
+          document.getElementById("routineForm");
 
-  db.reminders=db.reminders.filter(x=>
-    db.speciesRoutines.some(
-      r=>r.id===x.routineId
-    )
-  );
+        if(!form)return;
 
-  save();
-  closeModal();
-});
+        db.speciesRoutines.push({
 
-document.addEventListener("click",e=>{
+          id:newId(),
 
-  const done=e.target.closest(".doneReminder");
+          species:
+            form.querySelector('[name="species"]').value,
 
-  if(done){
-    const r=db.reminders.find(
-      x=>x.id===done.dataset.id
-    );
+          kind:
+            form.querySelector('[name="kind"]').value,
 
-    if(r){
-      r.done=true;
+          frequency:
+            form.querySelector('[name="frequency"]').value,
 
-      const routine=db.speciesRoutines.find(
-        x=>x.id===r.routineId
-      );
+          interval:
+            Number(
+              form.querySelector('[name="interval"]').value
+            ) || 1,
 
-      db.events.push({
-        id:crypto.randomUUID(),
-        animalId:r.animalId,
-        kind:routine?.kind||"note",
-        details:"Rappel effectué",
-        date:new Date().toISOString()
+          time:
+            form.querySelector('[name="time"]').value ||
+            "18:00"
+
+        });
+
+        persist();
+        render();
+        closeModal();
+
       });
 
-      save();
     }
-  }
 
-  const del=e.target.closest(".deleteRoutine");
+    const cancel=
+      document.getElementById("cancelRoutine");
 
-  if(del){
-    db.speciesRoutines=
-      db.speciesRoutines.filter(
-        x=>x.id!==del.dataset.id
+    if(cancel){
+      cancel.addEventListener(
+        "click",
+        closeModal
       );
+    }
 
-    db.reminders=
-      db.reminders.filter(
-        x=>x.routineId!==del.dataset.id
-      );
+  });
 
-    save();
-  }
-});
-
-function openAnimalEditor(id){
-
-  const a=animal(id);
-
-  if(!a)return;
-
-  openModal(`
-    <h2>Modifier l’animal</h2>
-
-    <form id="editAnimalForm">
-
-      <input
-        type="hidden"
-        name="id"
-        value="${esc(a.id)}"
-      >
-
-      <label>Nom / identifiant</label>
-
-      <input
-        name="name"
-        value="${esc(a.name||"")}"
-        placeholder="Ex. Kiwi"
-      >
-
-      <label>Espèce</label>
-
-      <input
-        name="species"
-        value="${esc(a.species||"")}"
-        required
-        list="editSpeciesSuggestions"
-        autocomplete="off"
-      >
-
-      <datalist id="editSpeciesSuggestions">
-        ${SPECIES_CATALOG.map(x=>
-          `<option value="${esc(x.name)}"></option>`
-        ).join("")}
-      </datalist>
-
-      <label>Groupe</label>
-
-      <select name="type">
-
-        <option
-          value="reptile"
-          ${a.type==="reptile"?"selected":""}
-        >
-          Reptiles
-        </option>
-
-        <option
-          value="amphibian"
-          ${a.type==="amphibian"?"selected":""}
-        >
-          Amphibiens
-        </option>
-
-        <option
-          value="gastropod"
-          ${a.type==="gastropod"?"selected":""}
-        >
-          Gastéropodes
-        </option>
-
-        <option
-          value="arthropod"
-          ${
-            a.type==="arthropod"||
-            a.type==="invertebrate"||
-            a.type==="insect"
-              ?"selected":""
-          }
-        >
-          Arthropodes
-        </option>
-
-      </select>
-
-      <label>Date de naissance</label>
-
-      <input
-        name="birthDate"
-        type="date"
-        value="${esc(a.birthDate||"")}"
-      >
-
-      <label>Localisation</label>
-
-      <input
-        name="location"
-        value="${esc(a.location||"")}"
-        placeholder="Ex. Salle reptiles, terrarium 3..."
-      >
-
-      <label>Certificat d’origine</label>
-
-      <select name="origin">
-
-        <option
-          value="NC"
-          ${a.origin==="NC"?"selected":""}
-        >
-          NC
-        </option>
-
-        <option
-          value="WC"
-          ${a.origin==="WC"?"selected":""}
-        >
-          WC
-        </option>
-
-      </select>
-
-      <label>Notes</label>
-
-      <textarea
-        name="notes"
-        placeholder="Informations supplémentaires..."
-      >${esc(a.notes||"")}</textarea>
-
-      <div class="formActions">
-
-        <button
-          type="button"
-          class="ghost"
-          onclick="closeModal()"
-        >
-          Annuler
-        </button>
-
-        <button
-          type="submit"
-          class="primary"
-        >
-          Enregistrer
-        </button>
-
-      </div>
-
-    </form>
-  `);
 }
 
-document.addEventListener("click",e=>{
+// Suppression routine
+document.addEventListener("click",event=>{
 
-  const editBtn=e.target.closest(".editAnimal");
+  const button=
+    event.target.closest(".deleteRoutine");
 
-  if(editBtn){
-    e.preventDefault();
-    e.stopPropagation();
-    openAnimalEditor(editBtn.dataset.id);
-    return;
-  }
+  if(!button)return;
 
-  const action=e.target.closest(".animalAction");
+  const id=button.dataset.id;
 
-  if(action)return;
-
-  const deleteBtn=e.target.closest(".deleteAnimal");
-
-  if(deleteBtn)return;
-
-  const animalCard=e.target.closest(".animalCard");
-
-  if(animalCard){
-    openAnimalEditor(animalCard.dataset.id);
-  }
-});
-
-document.addEventListener("submit",e=>{
-
-  if(e.target.id!=="editAnimalForm")return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  const f=new FormData(e.target);
-
-  const id=String(f.get("id")||"");
-
-  const a=db.animals.find(
-    x=>String(x.id)===id
-  );
-
-  if(!a){
-    alert("Animal introuvable.");
-    return;
-  }
-
-  const species=
-    String(f.get("species")||"").trim();
-
-  if(!species){
-    alert("L’espèce est obligatoire.");
-    return;
-  }
-
-  // Modification directe de l'animal existant.
-  a.name=
-    String(f.get("name")||"").trim();
-
-  a.species=species;
-
-  a.type=
-    String(f.get("type")||"arthropod");
-
-  a.birthDate=
-    String(f.get("birthDate")||"");
-
-  a.location=
-    String(f.get("location")||"").trim();
-
-  a.origin=
-    String(f.get("origin")||"NC");
-
-  a.notes=
-    String(f.get("notes")||"").trim();
-
-  // Enregistrement DIRECT dans le stockage local.
-  try{
-
-    localStorage.setItem(
-      KEY,
-      JSON.stringify(db)
-    );
-
-  }catch(err){
-
-    console.error(err);
-
-    alert(
-      "Impossible d’enregistrer les modifications sur cet appareil."
-    );
-
-    return;
-  }
-
-  render();
-  closeModal();
-});
-
-document.addEventListener("click",e=>{
-
-  const b=e.target.closest(".deleteAnimal");
-
-  if(!b)return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  const a=animal(b.dataset.id);
-
-  if(!a)return;
-
-  if(!confirm(
-    `Supprimer ${a.name||a.species} ?\nSes activités seront aussi supprimées.`
-  )){
-    return;
-  }
-
-  db.animals=
-    db.animals.filter(
-      x=>x.id!==a.id
-    );
-
-  db.events=
-    db.events.filter(
-      x=>x.animalId!==a.id
+  db.speciesRoutines=
+    db.speciesRoutines.filter(
+      r=>String(r.id)!==String(id)
     );
 
   db.reminders=
     db.reminders.filter(
-      x=>x.animalId!==a.id
+      r=>String(r.routineId)!==String(id)
     );
 
-  save();
+  persist();
+  render();
+
 });
 
-function activity(kind,preselect=null){
+// --------------------------------------------------
+// RAPPELS
+// --------------------------------------------------
 
-  const opts=db.animals.map(a=>
-    `<option
-      value="${esc(a.id)}"
-      ${a.id===preselect?"selected":""}
-    >
-      ${esc(a.name||"Sans nom")} — ${esc(a.species)}
-    </option>`
-  ).join("");
+function renderReminders(){
 
-  if(!opts){
-    return openModal(`
-      <h2>Ajoute d’abord un animal</h2>
-      <p class="muted">
-        Il faut un animal pour enregistrer une activité.
-      </p>
-    `);
-  }
+  const container=
+    document.getElementById("todayReminders");
 
-  const now=
-    new Date(
-      Date.now()-
-      new Date().getTimezoneOffset()*60000
-    )
-    .toISOString()
-    .slice(0,16);
+  if(!container)return;
 
-  const water=kind==="waterChange";
+  const now=Date.now();
 
-  const detailField=water
-    ?""
-    :`
-      <label>Détail</label>
-
-      <input
-        name="details"
-        placeholder="${
-          kind==="feeding"
-            ?"Ex. 3 grillons"
-            :kind==="watering"
-              ?"Ex. brumisation 30 s"
-              :"Observation..."
-        }"
-      >
-    `;
-
-  const valueField=
-    kind==="feeding"
-      ?`
-        <label>Complément (optionnel)</label>
-
-        <select name="value">
-          <option value="">Aucun</option>
-          <option value="Calcium">Calcium</option>
-          <option value="Vitamine D3">Vitamine D3</option>
-          <option value="Vitamine">Vitamine</option>
-        </select>
-      `
-      :(water
-        ?""
-        :`
-          <label>Valeur (optionnel)</label>
-
-          <input
-            name="value"
-            placeholder="${
-              kind==="weight"
-                ?"Ex. 482 g"
-                :"Quantité, durée…"
-            }"
-          >
-        `
-      );
-
-  openModal(`
-    <h2>${labels[kind]||kind}</h2>
-
-    <form id="eventForm">
-
-      <input
-        type="hidden"
-        name="kind"
-        value="${esc(kind)}"
-      >
-
-      <label>Animal</label>
-
-      <select name="animalId">
-        ${opts}
-      </select>
-
-      ${detailField}
-
-      ${valueField}
-
-      <label>Date et heure</label>
-
-      <input
-        type="datetime-local"
-        name="date"
-        value="${now}"
-      >
-
-      <div class="formActions">
-
-        <button
-          type="button"
-          class="ghost"
-          onclick="closeModal()"
-        >
-          Annuler
-        </button>
-
-        <button
-          type="submit"
-          class="primary"
-        >
-          Enregistrer
-        </button>
-
-      </div>
-
-    </form>
-  `);
-}
-
-document.querySelectorAll("[data-action]").forEach(b=>{
-  b.onclick=()=>{
-    activity(b.dataset.action);
-  };
-});
-
-document.addEventListener("click",e=>{
-  const b=e.target.closest(".animalAction");
-
-  if(!b)return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  activity("note",b.dataset.id);
-});
-
-document.addEventListener("submit",e=>{
-
-  if(e.target.id!=="eventForm")return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  const f=new FormData(e.target);
-
-  const dateValue=
-    String(f.get("date")||"");
-
-  const date=
-    dateValue
-      ?new Date(dateValue).toISOString()
-      :new Date().toISOString();
-
-  db.events.push({
-    id:crypto.randomUUID(),
-    animalId:String(f.get("animalId")||""),
-    kind:String(f.get("kind")||"note"),
-    details:String(f.get("details")||""),
-    value:String(f.get("value")||""),
-    date
+  const active=db.reminders.filter(r=>{
+    return !r.done &&
+      new Date(r.due).getTime()<=now;
   });
 
-  save();
-  closeModal();
-});
+  if(!active.length){
 
-if("serviceWorker"in navigator){
+    container.innerHTML=empty(
+      "Rien à faire",
+      "Tous les rappels sont à jour."
+    );
+
+    return;
+  }
+
+  container.innerHTML=
+    active.map(r=>{
+
+      const a=getAnimal(r.animalId);
+
+      const routine=
+        db.speciesRoutines.find(
+          x=>x.id===r.routineId
+        );
+
+      return `
+
+        <div class="event">
+
+          <div>
+
+            <b>
+              ⏰
+              ${esc(
+                labels[routine?.kind] ||
+                routine?.kind ||
+                "Rappel"
+              )}
+              ·
+              ${esc(a?.name || a?.species || "")}
+            </b>
+
+            <span class="muted">
+              ${new Date(r.due).toLocaleTimeString(
+                "fr-FR",
+                {
+                  hour:"2-digit",
+                  minute:"2-digit"
+                }
+              )}
+            </span>
+
+          </div>
+
+          <button
+            type="button"
+            class="primary doneReminder"
+            data-id="${esc(r.id)}"
+          >
+            ✓ Fait
+          </button>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+// --------------------------------------------------
+// INSTALLATION PWA
+// --------------------------------------------------
+
+let deferredPrompt=null;
+
+window.addEventListener(
+  "beforeinstallprompt",
+  event=>{
+
+    event.preventDefault();
+
+    deferredPrompt=event;
+
+    const button=
+      document.getElementById("installBtn");
+
+    if(button){
+      button.classList.remove("hidden");
+    }
+
+  }
+);
+
+const installButton=
+  document.getElementById("installBtn");
+
+if(installButton){
+
+  installButton.addEventListener(
+    "click",
+    async()=>{
+
+      if(!deferredPrompt)return;
+
+      deferredPrompt.prompt();
+
+      try{
+        await deferredPrompt.userChoice;
+      }catch(e){}
+
+      deferredPrompt=null;
+
+      installButton.classList.add("hidden");
+
+    }
+  );
+
+}
+
+// --------------------------------------------------
+// DEMANDE DE RECHARGE DE L'ANCIEN SERVICE WORKER
+// --------------------------------------------------
+
+// On désactive les anciens service workers pour éviter
+// qu'une ancienne version de TerraNote bloque app.js.
+if("serviceWorker" in navigator){
 
   navigator.serviceWorker
     .getRegistrations()
-    .then(rs=>{
-      if(rs.length){
-        return Promise.all(
-          rs.map(r=>r.unregister())
-        );
-      }
+    .then(registrations=>{
+      registrations.forEach(registration=>{
+        registration.unregister().catch(()=>{});
+      });
     })
     .catch(()=>{});
 
 }
 
-let deferred;
-
-window.addEventListener(
-  "beforeinstallprompt",
-  e=>{
-    e.preventDefault();
-
-    deferred=e;
-
-    const installBtn=
-      document.getElementById("installBtn");
-
-    if(installBtn){
-      installBtn.classList.remove("hidden");
-    }
-  }
-);
-
-const installBtn=
-  document.getElementById("installBtn");
-
-if(installBtn){
-
-  installBtn.onclick=async()=>{
-
-    if(deferred){
-
-      deferred.prompt();
-
-      deferred=null;
-
-    }
-
-  };
-
-}
+// --------------------------------------------------
+// DÉMARRAGE
+// --------------------------------------------------
 
 render();
+
+console.log(
+  "TerraNote v15 chargé —",
+  db.animals.length,
+  "animaux"
+);
