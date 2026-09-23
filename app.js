@@ -1,1559 +1,2485 @@
-// TerraNote v17 — groupes d'espèces + activités groupées
-const typeLabels={reptile:"Reptiles",amphibian:"Amphibiens",gastropod:"Gastéropodes",arthropod:"Arthropodes"};
-const icons={reptile:"🦎",amphibian:"🐸",gastropod:"🐌",arthropod:"🪲"};
-const labels={feeding:"Nourrissage",watering:"Arrosage / brumisation",weight:"Pesée",waterChange:"Changement de l’eau",note:"Note",cleaning:"Nettoyage",treatment:"Traitement",molt:"Mue"};
+// ============================================================
+// TerraNote v16
+// Groupes d'espèces + activités par groupe
+// ============================================================
 
-const SPECIES_CATALOG=[
-{name:"Cranidium gibbosum",type:"arthropod"},
-{name:"Brancsikia freyi",type:"arthropod"},
-{name:"Blaptica dubia",type:"arthropod"},
-{name:"Compsodes schwarzi",type:"arthropod"},
-{name:"Elliptorhina chopardi",type:"arthropod"},
-{name:"Elliptorhina javanica",type:"arthropod"},
-{name:"Eustegasta buprestoides",type:"arthropod"},
-{name:"Gyna caffrorum",type:"arthropod"},
-{name:"Gyna centurio",type:"arthropod"},
-{name:"Hemiblabera granulata",type:"arthropod"},
-{name:"Hormetica sp.",type:"arthropod"},
-{name:"Lucihormetica subcincta",type:"arthropod"},
-{name:"Lucihormetica verrucosa",type:"arthropod"},
-{name:"Macropanesthia rhinoceros",type:"arthropod"},
-{name:"Megaloblatta blaberoides",type:"arthropod"},
-{name:"Nauphoeta cinerea",type:"arthropod"},
-{name:"Nocticola vagus",type:"arthropod"},
-{name:"Oxyhaloa deusta",type:"arthropod"},
-{name:"Panchlora sp.",type:"arthropod"},
-{name:"Paraplecta minutissima",type:"arthropod"},
-{name:"Paratemnopteryx coloniana",type:"arthropod"},
-{name:"Periplaneta lateralis",type:"arthropod"},
-{name:"Phoetalia pallida",type:"arthropod"},
-{name:"Pseudoglomeris magnifica",type:"arthropod"},
-{name:"Pycnoscelus striatus",type:"arthropod"},
-{name:"Symploce pallens",type:"arthropod"},
-{name:"Therea bernhardti",type:"arthropod"},
-{name:"Therea olegrandjeani",type:"arthropod"},
-{name:"Therea regularis",type:"arthropod"},
-{name:"Therea sp.",type:"arthropod"},
-{name:"Ancylecha fenestrata",type:"arthropod"},
-{name:"Lirometopum coronatum",type:"arthropod"},
-{name:"Luzarida sp.",type:"arthropod"},
-{name:"Melanonotus powellorum",type:"arthropod"},
-{name:"Nesonotus reticulatus",type:"arthropod"},
-{name:"Orocharis sp.",type:"arthropod"},
-{name:"Phalangopsis cf. longipes",type:"arthropod"},
-{name:"Phymateus saxosus",type:"arthropod"},
-{name:"Teleutias aduncus",type:"arthropod"},
-{name:"Vestria sp.",type:"arthropod"},
-{name:"Xerophyllopteryx fumosa",type:"arthropod"},
-{name:"Anadenobolus leucostigma",type:"arthropod"},
-{name:"Aphistogoniulus hova",type:"arthropod"},
-{name:"Atopochetus caudulanus",type:"arthropod"},
-{name:"Centrobolus richardi",type:"arthropod"},
-{name:"Orthoporus lomontii",type:"arthropod"},
-{name:"Orthoporus sp.",type:"arthropod"},
-{name:"Sechelleptus sp.",type:"arthropod"},
-{name:"Zoosphaerium neptunus",type:"arthropod"},
-{name:"Charinus acosta",type:"arthropod"},
-{name:"Charinus sp.",type:"arthropod"},
-{name:"Heterophrynus alces",type:"arthropod"},
-{name:"Heterophrynus longicornis",type:"arthropod"},
-{name:"Paraphrynus laevifrons",type:"arthropod"},
-{name:"Phrynus goesii",type:"arthropod"},
-{name:"Armadillidae sp.",type:"arthropod"},
-{name:"Armadillidium gestroi",type:"arthropod"},
-{name:"Cubaris sp.",type:"arthropod"},
-{name:"Leptotrichus panzeri",type:"arthropod"},
-{name:"Porcellio dilatatus",type:"arthropod"},
-{name:"Porcellio hoffmannseggii",type:"arthropod"},
-{name:"Porcellio sp.",type:"arthropod"},
-{name:"Trichorrhina tomentosa",type:"arthropod"},
-{name:"Trichorrhina sp.",type:"arthropod"},
-{name:"Venezillo sp.",type:"arthropod"},
-{name:"Platymeris biguttatus",type:"arthropod"},
-{name:"Psytalla horrida",type:"arthropod"},
-{name:"Lophosaurus boydii",type:"reptile"},
-{name:"Ouroborus cataphractus",type:"reptile"},
-{name:"Saurodactylus brosseti",type:"reptile"},
-{name:"Saurodactylus harrisii",type:"reptile"},
-{name:"Sphaerodactylus elegans",type:"reptile"},
-{name:"Sphaerodactylus torrei",type:"reptile"},
-{name:"Ceratophrys cranwelli",type:"amphibian"},
-{name:"Pyxicephalus adspersus",type:"amphibian"}
+const typeLabels = {
+  reptile: "Reptiles",
+  amphibian: "Amphibiens",
+  gastropod: "Gastéropodes",
+  arthropod: "Arthropodes"
+};
+
+const icons = {
+  reptile: "🦎",
+  amphibian: "🐸",
+  gastropod: "🐌",
+  arthropod: "🪲"
+};
+
+const labels = {
+  feeding: "Nourrissage",
+  watering: "Arrosage / brumisation",
+  weight: "Pesée",
+  waterChange: "Changement de l’eau",
+  note: "Note",
+  cleaning: "Nettoyage",
+  treatment: "Traitement",
+  molt: "Mue"
+};
+
+// ============================================================
+// CATALOGUE DES 75 ESPÈCES
+// ============================================================
+
+const SPECIES_CATALOG = [
+  {name:"Cranidium gibbosum",type:"arthropod"},
+  {name:"Brancsikia freyi",type:"arthropod"},
+  {name:"Blaptica dubia",type:"arthropod"},
+  {name:"Compsodes schwarzi",type:"arthropod"},
+  {name:"Elliptorhina chopardi",type:"arthropod"},
+  {name:"Elliptorhina javanica",type:"arthropod"},
+  {name:"Eustegasta buprestoides",type:"arthropod"},
+  {name:"Gyna caffrorum",type:"arthropod"},
+  {name:"Gyna centurio",type:"arthropod"},
+  {name:"Hemiblabera granulata",type:"arthropod"},
+  {name:"Hormetica sp.",type:"arthropod"},
+  {name:"Lucihormetica subcincta",type:"arthropod"},
+  {name:"Lucihormetica verrucosa",type:"arthropod"},
+  {name:"Macropanesthia rhinoceros",type:"arthropod"},
+  {name:"Megaloblatta blaberoides",type:"arthropod"},
+  {name:"Nauphoeta cinerea",type:"arthropod"},
+  {name:"Nocticola vagus",type:"arthropod"},
+  {name:"Oxyhaloa deusta",type:"arthropod"},
+  {name:"Panchlora sp.",type:"arthropod"},
+  {name:"Paraplecta minutissima",type:"arthropod"},
+  {name:"Paratemnopteryx coloniana",type:"arthropod"},
+  {name:"Periplaneta lateralis",type:"arthropod"},
+  {name:"Phoetalia pallida",type:"arthropod"},
+  {name:"Pseudoglomeris magnifica",type:"arthropod"},
+  {name:"Pycnoscelus striatus",type:"arthropod"},
+  {name:"Symploce pallens",type:"arthropod"},
+  {name:"Therea bernhardti",type:"arthropod"},
+  {name:"Therea olegrandjeani",type:"arthropod"},
+  {name:"Therea regularis",type:"arthropod"},
+  {name:"Therea sp.",type:"arthropod"},
+  {name:"Ancylecha fenestrata",type:"arthropod"},
+  {name:"Lirometopum coronatum",type:"arthropod"},
+  {name:"Luzarida sp.",type:"arthropod"},
+  {name:"Melanonotus powellorum",type:"arthropod"},
+  {name:"Nesonotus reticulatus",type:"arthropod"},
+  {name:"Orocharis sp.",type:"arthropod"},
+  {name:"Phalangopsis cf. longipes",type:"arthropod"},
+  {name:"Phymateus saxosus",type:"arthropod"},
+  {name:"Teleutias aduncus",type:"arthropod"},
+  {name:"Vestria sp.",type:"arthropod"},
+  {name:"Xerophyllopteryx fumosa",type:"arthropod"},
+  {name:"Anadenobolus leucostigma",type:"arthropod"},
+  {name:"Aphistogoniulus hova",type:"arthropod"},
+  {name:"Atopochetus caudulanus",type:"arthropod"},
+  {name:"Centrobolus richardi",type:"arthropod"},
+  {name:"Orthoporus lomontii",type:"arthropod"},
+  {name:"Orthoporus sp.",type:"arthropod"},
+  {name:"Sechelleptus sp.",type:"arthropod"},
+  {name:"Zoosphaerium neptunus",type:"arthropod"},
+  {name:"Charinus acosta",type:"arthropod"},
+  {name:"Charinus sp.",type:"arthropod"},
+  {name:"Heterophrynus alces",type:"arthropod"},
+  {name:"Heterophrynus longicornis",type:"arthropod"},
+  {name:"Paraphrynus laevifrons",type:"arthropod"},
+  {name:"Phrynus goesii",type:"arthropod"},
+  {name:"Armadillidae sp.",type:"arthropod"},
+  {name:"Armadillidium gestroi",type:"arthropod"},
+  {name:"Cubaris sp.",type:"arthropod"},
+  {name:"Leptotrichus panzeri",type:"arthropod"},
+  {name:"Porcellio dilatatus",type:"arthropod"},
+  {name:"Porcellio hoffmannseggii",type:"arthropod"},
+  {name:"Porcellio sp.",type:"arthropod"},
+  {name:"Trichorrhina tomentosa",type:"arthropod"},
+  {name:"Trichorrhina sp.",type:"arthropod"},
+  {name:"Venezillo sp.",type:"arthropod"},
+  {name:"Platymeris biguttatus",type:"arthropod"},
+  {name:"Psytalla horrida",type:"arthropod"},
+  {name:"Lophosaurus boydii",type:"reptile"},
+  {name:"Ouroborus cataphractus",type:"reptile"},
+  {name:"Saurodactylus brosseti",type:"reptile"},
+  {name:"Saurodactylus harrisii",type:"reptile"},
+  {name:"Sphaerodactylus elegans",type:"reptile"},
+  {name:"Sphaerodactylus torrei",type:"reptile"},
+  {name:"Ceratophrys cranwelli",type:"amphibian"},
+  {name:"Pyxicephalus adspersus",type:"amphibian"}
 ];
 
-const KEY="terranote_v14";
+// ============================================================
+// DONNÉES
+// ============================================================
 
-const INITIAL_ANIMALS=SPECIES_CATALOG.map((s,i)=>({
-id:`catalog_v14_${i+1}`,
-name:s.name,
-species:s.name,
-type:s.type,
-birthDate:"",
-location:"",
-origin:"NC",
-notes:""
+const KEY = "terranote_v14";
+
+const INITIAL_ANIMALS = SPECIES_CATALOG.map((s,i) => ({
+  id:`catalog_v14_${i+1}`,
+  name:s.name,
+  species:s.name,
+  type:s.type,
+  birthDate:"",
+  location:"",
+  origin:"NC",
+  notes:""
 }));
 
 let db;
 
-try{
-db=JSON.parse(localStorage.getItem(KEY)||"null")
-}catch(e){
-db=null
+try {
+  db = JSON.parse(
+    localStorage.getItem(KEY) ||
+    '{"animals":[],"events":[],"speciesRoutines":[],"reminders":[],"speciesGroups":[]}'
+  );
+} catch(e) {
+  db = {
+    animals:[],
+    events:[],
+    speciesRoutines:[],
+    reminders:[],
+    speciesGroups:[]
+  };
 }
 
-if(!db||typeof db!=="object")db={};
+if(!Array.isArray(db.animals)) db.animals=[];
+if(!Array.isArray(db.events)) db.events=[];
+if(!Array.isArray(db.speciesRoutines)) db.speciesRoutines=[];
+if(!Array.isArray(db.reminders)) db.reminders=[];
+if(!Array.isArray(db.speciesGroups)) db.speciesGroups=[];
+if(!Array.isArray(db.tasks)) db.tasks=[];
+db.animals.forEach(a=>{ if(typeof a.active!=="boolean") a.active=true; });
 
-for(const k of ["animals","events","speciesRoutines","reminders","speciesGroups"]){
-if(!Array.isArray(db[k]))db[k]=[]
-}
-
-db.animals.forEach(a=>{
-if(a.type==="invertebrate"||a.type==="insect"){
-a.type="arthropod"
-}
+// Migration des anciennes catégories
+db.animals.forEach(a => {
+  if(a.type==="invertebrate" || a.type==="insect") {
+    a.type="arthropod";
+  }
 });
 
-if(db.animals.length===0){
-db.animals=INITIAL_ANIMALS.map(a=>({...a}))
+// Si aucune donnée animale n'existe, charger les 75 espèces.
+if(db.animals.length===0) {
+  db.animals=INITIAL_ANIMALS.map(a=>({...a}));
 }
 
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
+// ============================================================
+// OUTILS
+// ============================================================
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c => ({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
 }[c]));
 
-const uid=()=>{
-if(crypto.randomUUID)return crypto.randomUUID();
-return "id_"+Date.now()+"_"+Math.random().toString(36).slice(2)
-};
-
-const animal=id=>db.animals.find(a=>String(a.id)===String(id));
-
-const getGroup=id=>db.speciesGroups.find(g=>String(g.id)===String(id));
-
-const animalsForGroup=g=>{
-if(!g)return[];
-
-return db.animals.filter(a=>
-(g.species||[]).some(s=>
-String(s).trim().toLowerCase()===
-String(a.species||"").trim().toLowerCase()
-)
-)
-};
-
-const groupNamesForSpecies=s=>
-db.speciesGroups
-.filter(g=>
-(g.species||[]).some(x=>
-x.toLowerCase()===String(s).toLowerCase()
-)
-)
-.map(g=>g.name);
-
-function save(){
-localStorage.setItem(KEY,JSON.stringify(db));
-render()
+function animal(id) {
+  return db.animals.find(a=>String(a.id)===String(id));
 }
 
-function openModal(html){
-const m=document.getElementById("modal");
-const c=document.getElementById("modalContent");
-
-if(!m||!c)return;
-
-c.innerHTML=html;
-m.classList.remove("hidden")
+function save() {
+  try {
+    localStorage.setItem(KEY,JSON.stringify(db));
+    render();
+    renderTasksPage();
+  } catch(err) {
+    console.error(err);
+    alert("Impossible d’enregistrer les données sur cet appareil.");
+  }
 }
 
-function closeModal(){
-document.getElementById("modal")?.classList.add("hidden")
+function openModal(html) {
+  const modal=document.getElementById("modal");
+  const content=document.getElementById("modalContent");
+
+  if(!modal || !content) return;
+
+  content.innerHTML=html;
+  modal.classList.remove("hidden");
 }
 
-document.getElementById("closeModal")?.addEventListener(
-"click",
-closeModal
-);
-
-document.querySelectorAll(".nav").forEach(b=>
-b.addEventListener("click",()=>{
-document.querySelectorAll(".nav")
-.forEach(x=>x.classList.remove("active"));
-
-b.classList.add("active");
-
-document.querySelectorAll(".page")
-.forEach(x=>x.classList.remove("active"));
-
-document.getElementById(b.dataset.page)
-?.classList.add("active");
-})
-);
-
-function card(a){
-
-const groups=groupNamesForSpecies(a.species);
-
-return `
-<div
-class="card animalCard"
-data-id="${esc(a.id)}"
-style="cursor:pointer"
->
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:10px
-">
-
-<div>
-
-<div style="font-size:24px">
-${icons[a.type]||"🪲"}
-</div>
-
-<h3 style="margin:4px 0">
-${esc(a.name||a.species)}
-</h3>
-
-<p class="muted">
-${esc(a.species)}
-</p>
-
-</div>
-
-<span class="pill">
-${esc(typeLabels[a.type]||a.type)}
-</span>
-
-</div>
-
-${
-a.location
-?`<p>📍 ${esc(a.location)}</p>`
-:`<p class="muted">📍 Localisation non renseignée</p>`
+function closeModal() {
+  const modal=document.getElementById("modal");
+  if(modal) modal.classList.add("hidden");
 }
 
-${
-groups.length
-?`<p class="muted">
-📦 ${groups.map(esc).join(" · ")}
-</p>`
-:""
+const closeButton=document.getElementById("closeModal");
+
+if(closeButton) {
+  closeButton.onclick=closeModal;
 }
 
-<div class="formActions">
+// ============================================================
+// NAVIGATION
+// ============================================================
 
-<button
-type="button"
-class="ghost animalAction"
-data-kind="feeding"
-data-id="${esc(a.id)}"
->
-🍽️
-</button>
+document.querySelectorAll(".nav").forEach(button => {
+  button.onclick=()=>{
+    document.querySelectorAll(".nav")
+      .forEach(x=>x.classList.remove("active"));
 
-<button
-type="button"
-class="ghost animalAction"
-data-kind="watering"
-data-id="${esc(a.id)}"
->
-💧
-</button>
+    button.classList.add("active");
 
-<button
-type="button"
-class="ghost animalAction"
-data-kind="note"
-data-id="${esc(a.id)}"
->
-📝
-</button>
+    document.querySelectorAll(".page")
+      .forEach(x=>x.classList.remove("active"));
 
-</div>
+    const page=document.getElementById(button.dataset.page);
 
-</div>
-`
+    if(page) page.classList.add("active");
+  };
+});
+
+// ============================================================
+// GROUPES D'ESPÈCES
+// ============================================================
+
+function getGroup(id) {
+  return db.speciesGroups.find(
+    g=>String(g.id)===String(id)
+  );
 }
 
-function renderGroups(){
+function animalsForGroup(group) {
+  if(!group) return [];
 
-const all=document.getElementById("allAnimals");
+  const species=(group.species||[])
+    .map(s=>String(s).trim().toLowerCase());
 
-if(!all)return;
-
-let html=`
-
-<div class="card">
-
-<div
-class="sectionHead"
-style="margin:0"
->
-
-<div>
-
-<h3 style="margin:0">
-📦 Groupes d’espèces
-</h3>
-
-<p
-class="muted"
-style="margin:4px 0 0"
->
-Crée des groupes pour nourrir, arroser
-ou enregistrer une activité sur plusieurs
-espèces en une seule fois.
-</p>
-
-</div>
-
-<button
-type="button"
-class="primary"
-id="newSpeciesGroup"
->
-+ Groupe
-</button>
-
-</div>
-`;
-
-if(db.speciesGroups.length){
-
-html+=`
-
-<div style="margin-top:12px">
-
-${db.speciesGroups.map(g=>{
-
-const n=animalsForGroup(g).length;
-
-return `
-
-<div
-class="event"
-style="margin-bottom:8px"
->
-
-<div style="flex:1">
-
-<b>
-📦 ${esc(g.name)}
-</b>
-
-<div class="muted">
-${n} animal${n>1?"aux":""}
-·
-${(g.species||[]).length}
-espèce${(g.species||[]).length>1?"s":""}
-</div>
-
-${
-g.description
-?`<div class="muted">
-${esc(g.description)}
-</div>`
-:""
+  return db.animals.filter(a =>
+    species.includes(
+      String(a.species||"").trim().toLowerCase()
+    )
+  );
 }
 
-</div>
-
-<div
-style="display:flex;gap:6px"
->
-
-<button
-type="button"
-class="ghost editGroup"
-data-id="${esc(g.id)}"
->
-Modifier
-</button>
-
-<button
-type="button"
-class="ghost deleteGroup"
-data-id="${esc(g.id)}"
->
-🗑️
-</button>
-
-</div>
-
-</div>
-`
-
-}).join("")}
-
-</div>
-`
-
-}else{
-
-html+=`
-
-<p class="muted" style="margin-top:12px">
-Aucun groupe pour le moment.
-</p>
-`
+function groupNamesForSpecies(species) {
+  return db.speciesGroups
+    .filter(g=>
+      (g.species||[]).some(
+        s=>String(s).toLowerCase()===String(species).toLowerCase()
+      )
+    )
+    .map(g=>g.name);
 }
 
-html+=`
+function renderGroups() {
 
-</div>
+  const all=document.getElementById("allAnimals");
 
-<h3 style="margin-top:18px">
-Mes animaux
-</h3>
+  if(!all) return;
 
-<div class="grid">
-${db.animals.map(card).join("")}
-</div>
-`;
+  let groupHTML="";
 
-all.innerHTML=html
+  if(db.speciesGroups.length) {
+
+    groupHTML=`
+      <div class="card">
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:10px;
+          flex-wrap:wrap;
+        ">
+          <div>
+            <h2 style="margin:0">📦 Groupes d'espèces</h2>
+            <p class="muted" style="margin-bottom:0">
+              Regroupe plusieurs espèces pour les nourrissages,
+              arrosages et autres soins.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="primary"
+            id="newSpeciesGroup"
+          >
+            + Nouveau groupe
+          </button>
+        </div>
+
+        <div style="margin-top:14px">
+          ${db.speciesGroups.map(group => {
+
+            const members=animalsForGroup(group);
+
+            return `
+              <div class="event" style="margin-bottom:8px">
+
+                <div style="flex:1">
+
+                  <b>📦 ${esc(group.name)}</b>
+
+                  <span class="muted">
+                    ${members.length} animal${members.length>1?"aux":""}
+                    · ${(group.species||[]).length}
+                    espèce${(group.species||[]).length>1?"s":""}
+                  </span>
+
+                  ${
+                    group.description
+                    ?`<span class="muted">${esc(group.description)}</span>`
+                    :""
+                  }
+
+                </div>
+
+                <div style="
+                  display:flex;
+                  gap:6px;
+                  flex-wrap:wrap;
+                ">
+
+                  <button
+                    type="button"
+                    class="ghost editGroup"
+                    data-id="${esc(group.id)}"
+                  >
+                    Modifier
+                  </button>
+
+                  <button
+                    type="button"
+                    class="ghost deleteGroup"
+                    data-id="${esc(group.id)}"
+                  >
+                    🗑️
+                  </button>
+
+                </div>
+
+              </div>
+            `;
+
+          }).join("")}
+        </div>
+      </div>
+    `;
+
+  } else {
+
+    groupHTML=`
+      <div class="card">
+
+        <h2>📦 Groupes d'espèces</h2>
+
+        <p class="muted">
+          Crée un groupe pour appliquer un nourrissage,
+          un arrosage ou une autre activité à plusieurs espèces
+          en une seule fois.
+        </p>
+
+        <button
+          type="button"
+          class="primary"
+          id="newSpeciesGroup"
+        >
+          + Créer mon premier groupe
+        </button>
+
+      </div>
+    `;
+  }
+
+  const activeAnimals=db.animals.filter(a=>a.active!==false);
+  const inactiveAnimals=db.animals.filter(a=>a.active===false);
+  const cards=activeAnimals.map(a=>card(a)).join("");
+
+  all.innerHTML=
+    groupHTML+
+    `<h3 style="margin-top:18px">Mes animaux actifs (${activeAnimals.length})</h3>
+     <div class="grid">${cards || '<p class="muted">Aucun animal actif.</p>'}</div>
+     ${inactiveAnimals.length ? `<div class="card" style="margin-top:16px"><h3>⚪ Animaux désactivés (${inactiveAnimals.length})</h3>${inactiveAnimals.map(a=>`<div class="event" style="display:flex;gap:8px;align-items:center;margin:8px 0"><div style="flex:1"><b>${esc(a.name||a.species)}</b><div class="muted">${esc(a.species)}</div></div><button type="button" class="primary reactivateAnimal" data-id="${esc(a.id)}">🟢 Réactiver</button><button type="button" class="ghost deleteAnimal" data-id="${esc(a.id)}">🗑️</button></div>`).join('')}</div>` : ''}`;
+
+  const button=document.getElementById("newSpeciesGroup");
+
+  if(button) {
+    button.onclick=()=>openGroupEditor();
+  }
 }
 
-function openGroupEditor(id=null){
+// ============================================================
+// CRÉATION / MODIFICATION D'UN GROUPE
+// ============================================================
 
-const g=id?getGroup(id):null;
+function openGroupEditor(groupId=null) {
 
-let catalog=[...SPECIES_CATALOG];
+  const group=groupId ? getGroup(groupId) : null;
 
-db.animals.forEach(a=>{
+  const selected=group
+    ?(group.species||[])
+    :[];
 
-if(
-a.species &&
-!catalog.some(
-s=>s.name.toLowerCase()===
-a.species.toLowerCase()
-)
-){
+  const catalog=[...SPECIES_CATALOG];
 
-catalog.push({
-name:a.species,
-type:a.type||"arthropod"
-})
+  // Ajoute aussi les espèces éventuellement créées manuellement.
+  db.animals.forEach(a=>{
+    if(
+      a.species &&
+      !catalog.some(
+        x=>x.name.toLowerCase()===a.species.toLowerCase()
+      )
+    ) {
+      catalog.push({
+        name:a.species,
+        type:a.type||"arthropod"
+      });
+    }
+  });
 
+  openModal(`
+
+    <h2>
+      ${group ? "Modifier le groupe" : "Nouveau groupe d'espèces"}
+    </h2>
+
+    <p class="muted">
+      Sélectionne toutes les espèces qui doivent recevoir
+      les mêmes soins.
+    </p>
+
+    <form id="groupForm">
+
+      <input
+        type="hidden"
+        name="id"
+        value="${group ? esc(group.id) : ""}"
+      >
+
+      <label>Nom du groupe</label>
+
+      <input
+        name="name"
+        required
+        value="${group ? esc(group.name) : ""}"
+        placeholder="Ex. Blattes"
+      >
+
+      <label>Description</label>
+
+      <input
+        name="description"
+        value="${group ? esc(group.description||"") : ""}"
+        placeholder="Ex. Nourrissage tous les 3 jours"
+      >
+
+      <label>Espèces du groupe</label>
+
+      <div style="
+        max-height:360px;
+        overflow-y:auto;
+        border:1px solid rgba(128,128,128,.3);
+        border-radius:10px;
+        padding:8px;
+        margin-top:6px;
+      ">
+
+        ${catalog.map((s,i)=>{
+
+          const checked=selected.some(
+            x=>String(x).toLowerCase()===
+               String(s.name).toLowerCase()
+          );
+
+          return `
+            <label style="
+              display:flex;
+              align-items:center;
+              gap:9px;
+              padding:7px 4px;
+              margin:0;
+              cursor:pointer;
+            ">
+
+              <input
+                type="checkbox"
+                name="species"
+                value="${esc(s.name)}"
+                ${checked?"checked":""}
+              >
+
+              <span>
+                ${esc(s.name)}
+              </span>
+
+            </label>
+          `;
+
+        }).join("")}
+
+      </div>
+
+      <div class="formActions">
+
+        <button
+          type="button"
+          class="ghost"
+          id="cancelGroup"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="submit"
+          class="primary"
+        >
+          ${group ? "Enregistrer" : "Créer le groupe"}
+        </button>
+
+      </div>
+
+    </form>
+  `);
+
+  const cancel=document.getElementById("cancelGroup");
+
+  if(cancel) cancel.onclick=closeModal;
 }
+
+// ============================================================
+// CARTES ANIMAUX
+// ============================================================
+
+function card(a) {
+
+  const meta=[
+    a.birthDate
+      ?`🎂 ${new Intl.DateTimeFormat("fr-FR")
+          .format(new Date(a.birthDate+"T00:00:00"))}`
+      :"",
+
+    a.location
+      ?`📍 ${esc(a.location)}`
+      :"",
+
+    a.origin
+      ?`📄 ${esc(a.origin)}`
+      :""
+  ].filter(Boolean).join(" · ");
+
+  const groups=groupNamesForSpecies(a.species);
+
+  return `
+    <div
+      class="card animalCard"
+      data-id="${esc(a.id)}"
+      style="cursor:pointer"
+    >
+
+      <div class="animal">
+
+        <div class="avatar">
+          ${icons[a.type]||"🐾"}
+        </div>
+
+        <div>
+
+          <b>${esc(a.name||"Sans nom")}</b>
+
+          <div class="muted">
+            ${esc(a.species||"")}
+            ·
+            ${esc(typeLabels[a.type]||a.type||"")}
+          </div>
+
+        </div>
+
+      </div>
+
+      ${
+        groups.length
+        ?`
+          <p class="muted">
+            📦 ${groups.map(esc).join(" · ")}
+          </p>
+        `
+        :""
+      }
+
+      ${meta
+        ?`<p class="muted">${meta}</p>`
+        :""
+      }
+
+      ${
+        a.notes
+        ?`<p class="muted">📝 ${esc(a.notes)}</p>`
+        :""
+      }
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+        <button type="button" class="ghost deactivateAnimal" data-id="${esc(a.id)}" style="flex:1">⚪ Désactiver</button>
+
+        <button
+          type="button"
+          class="primary editAnimal"
+          data-id="${esc(a.id)}"
+          style="flex:1"
+        >
+          Modifier
+        </button>
+
+        <button
+          type="button"
+          class="ghost animalAction"
+          data-id="${esc(a.id)}"
+          style="flex:1"
+        >
+          Ajouter une activité
+        </button>
+
+        <button
+          type="button"
+          class="ghost deleteAnimal"
+          data-id="${esc(a.id)}"
+          title="Supprimer cet animal"
+        >
+          🗑️
+        </button>
+
+      </div>
+
+    </div>
+  `;
+}
+
+// ============================================================
+// ROUTINES
+// ============================================================
+
+function routineText(r) {
+
+  if(r.frequency==="daily") {
+    return `Tous les jours à ${r.time}`;
+  }
+
+  if(r.frequency==="weekly") {
+    return `Chaque semaine (${r.days||"à définir"}) à ${r.time}`;
+  }
+
+  return `Tous les ${r.interval||1} jours à ${r.time}`;
+}
+
+function renderRoutines() {
+
+  const el=document.getElementById("routineList");
+
+  if(!el) return;
+
+  if(!db.speciesRoutines.length) {
+
+    el.innerHTML=`
+      <div class="card">
+        <b>Aucune routine</b>
+        <p class="muted">
+          Crée une routine pour programmer automatiquement
+          tes rappels.
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  el.innerHTML=db.speciesRoutines.map(r=>`
+
+    <div class="event">
+
+      <div>
+
+        <b>
+          ${esc(labels[r.kind]||r.kind)}
+          ·
+          ${esc(r.species)}
+        </b>
+
+        <span class="muted">
+          ${esc(routineText(r))}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="ghost deleteRoutine"
+        data-id="${esc(r.id)}"
+      >
+        Supprimer
+      </button>
+
+    </div>
+
+  `).join("");
+}
+
+// ============================================================
+// RAPPELS
+// ============================================================
+
+function dueForRoutine(r,a) {
+
+  const now=new Date();
+
+  const key=`${a.id}_${r.id}`;
+
+  const existing=db.reminders.find(
+    x=>x.key===key&&!x.done
+  );
+
+  if(existing) return existing;
+
+  let due=new Date(now);
+
+  const parts=(r.time||"18:00").split(":");
+
+  due.setHours(
+    Number(parts[0])||18,
+    Number(parts[1])||0,
+    0,
+    0
+  );
+
+  if(r.frequency==="interval") {
+    due.setDate(
+      due.getDate()+(Number(r.interval)||1)-1
+    );
+  }
+
+  if(due>now) {
+    due.setDate(due.getDate()-1);
+  }
+
+  return {
+    id:crypto.randomUUID(),
+    key,
+    animalId:a.id,
+    routineId:r.id,
+    due:due.toISOString(),
+    done:false
+  };
+}
+
+function renderToday() {
+
+  const el=document.getElementById("todayReminders");
+
+  if(!el) return;
+
+  db.animals.forEach(a=>{
+
+    db.speciesRoutines
+      .filter(r=>
+        String(r.species||"").toLowerCase()===
+        String(a.species||"").toLowerCase()
+      )
+      .forEach(r=>{
+
+        const reminder=dueForRoutine(r,a);
+
+        if(!db.reminders.some(
+          x=>x.key===reminder.key&&!x.done
+        )) {
+          db.reminders.push(reminder);
+        }
+
+      });
+
+  });
+
+  const now=Date.now();
+
+  const active=db.reminders.filter(
+    x=>!x.done &&
+       new Date(x.due).getTime()<=now
+  );
+
+  if(!active.length) {
+
+    el.innerHTML=`
+      <div class="card">
+
+        <b>Rien à faire</b>
+
+        <p class="muted">
+          Tous les rappels sont à jour.
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  el.innerHTML=active.map(x=>{
+
+    const a=animal(x.animalId);
+
+    const r=db.speciesRoutines.find(
+      z=>z.id===x.routineId
+    );
+
+    return `
+      <div class="event">
+
+        <div>
+
+          <b>
+            ⏰ ${esc(labels[r?.kind]||r?.kind)}
+            ·
+            ${esc(a?.name||"")}
+          </b>
+
+          <span class="muted">
+            ${esc(r?.species||"")}
+            ·
+            ${new Date(x.due).toLocaleTimeString(
+              "fr-FR",
+              {
+                hour:"2-digit",
+                minute:"2-digit"
+              }
+            )}
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="primary doneReminder"
+          data-id="${esc(x.id)}"
+        >
+          ✓ Fait
+        </button>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+// ============================================================
+// HISTORIQUE
+// ============================================================
+
+function eventHTML(arr) {
+
+  if(!arr.length) {
+
+    return `
+      <div class="card">
+
+        <b>Pas encore d’activité</b>
+
+        <p class="muted">
+          Tes nourrissages, arrosages et observations
+          apparaîtront ici.
+        </p>
+
+      </div>
+    `;
+  }
+
+  return arr.map(e=>{
+
+    const a=animal(e.animalId);
+
+    return `
+      <div class="event">
+
+        <div>
+
+          <b>
+            ${esc(labels[e.kind]||e.kind)}
+            ·
+            ${esc(a?.name||"Animal supprimé")}
+          </b>
+
+          <span class="muted">
+            ${esc(e.details||"")}
+            ${e.value?` · ${esc(e.value)}`:""}
+          </span>
+
+        </div>
+
+        <span class="muted">
+          ${new Intl.DateTimeFormat("fr-FR",{
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+          }).format(new Date(e.date))}
+        </span>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+// ============================================================
+// AFFICHAGE PRINCIPAL
+// ============================================================
+
+function render() {
+
+  const todayTitle=document.getElementById("todayTitle");
+
+  if(todayTitle) {
+
+    todayTitle.textContent=
+      new Intl.DateTimeFormat("fr-FR",{
+        weekday:"long",
+        day:"numeric",
+        month:"long"
+      }).format(new Date());
+
+  }
+
+  const today=new Date().toDateString();
+
+  const summary=document.getElementById("summary");
+
+  if(summary) {
+
+    summary.textContent=
+      `${db.animals.length} animaux suivi${db.animals.length>1?"s":""} · `+
+      `${db.events.filter(
+        e=>new Date(e.date).toDateString()===today
+      ).length} activité(s) aujourd’hui`;
+
+  }
+
+  const active=db.animals.filter(a=>a.active!==false);
+  const inactive=db.animals.filter(a=>a.active===false);
+
+  const cards=
+    active.map(a=>card(a)).join("") ||
+    `<div class="card"><b>Aucun animal actif</b><p class="muted">Tous les animaux sont désactivés.</p></div>`;
+
+  const animalGrid=document.getElementById("animalGrid");
+
+  if(animalGrid) {
+    animalGrid.innerHTML=cards;
+  }
+
+  const allAnimals=document.getElementById("allAnimals");
+  if(allAnimals) {
+    const activeCount=active.length;
+    const inactiveHtml=inactive.length?`<div class="card" style="margin-top:16px"><h3>⚪ Animaux désactivés (${inactive.length})</h3>${inactive.map(a=>`<div class="event" style="display:flex;gap:8px;align-items:center;margin:8px 0"><div style="flex:1"><b>${esc(a.name||a.species)}</b><div class="muted">${esc(a.species)}</div></div><button type="button" class="primary reactivateAnimal" data-id="${esc(a.id)}">🟢 Réactiver</button><button type="button" class="ghost deleteAnimal" data-id="${esc(a.id)}">🗑️</button></div>`).join("")}</div>`:"";
+    allAnimals.innerHTML=`<div style="margin-bottom:12px"><b>${activeCount} animal${activeCount>1?"aux":""} actif${activeCount>1?"s":""}</b></div>`+document.getElementById("animalGrid")?.innerHTML+inactiveHtml;
+  }
+
+  renderGroups();
+
+  const sortedEvents=db.events
+    .slice()
+    .sort(
+      (a,b)=>new Date(b.date)-new Date(a.date)
+    );
+
+  const recent=document.getElementById("recent");
+
+  const history=document.getElementById("historyList");
+
+  if(recent) {
+    recent.innerHTML=
+      eventHTML(sortedEvents.slice(0,6));
+  }
+
+  if(history) {
+    history.innerHTML=
+      eventHTML(sortedEvents);
+  }
+
+  renderRoutines();
+  renderToday();
+}
+
+// ============================================================
+// AJOUT ANIMAL
+// ============================================================
+
+const addAnimal=document.getElementById("addAnimal");
+
+if(addAnimal) {
+
+  addAnimal.onclick=()=>{
+
+    openModal(`
+
+      <h2>Nouvel animal</h2>
+
+      <form id="animalForm">
+
+        <label>
+          Nom / identifiant
+          <span class="muted">(optionnel)</span>
+        </label>
+
+        <input
+          name="name"
+          placeholder="Ex. Kiwi"
+        >
+
+        <label>Espèce</label>
+
+        <input
+          id="speciesSearch"
+          name="species"
+          required
+          list="speciesSuggestions"
+          autocomplete="off"
+          placeholder="Ex. Pogona vitticeps"
+        >
+
+        <datalist id="speciesSuggestions">
+
+          ${SPECIES_CATALOG.map(x=>
+            `<option value="${esc(x.name)}"></option>`
+          ).join("")}
+
+        </datalist>
+
+        <small class="muted">
+          Choisis une espèce de ton catalogue
+          ou tape un autre nom.
+        </small>
+
+        <label>Catégorie</label>
+
+        <select name="type" id="animalType">
+
+          <option value="reptile">
+            Reptiles
+          </option>
+
+          <option value="amphibian">
+            Amphibiens
+          </option>
+
+          <option value="gastropod">
+            Gastéropodes
+          </option>
+
+          <option value="arthropod">
+            Arthropodes
+          </option>
+
+        </select>
+
+        <label>
+          Date de naissance
+          <span class="muted">(optionnel)</span>
+        </label>
+
+        <input
+          name="birthDate"
+          type="date"
+        >
+
+        <label>Localisation</label>
+
+        <input
+          name="location"
+          placeholder="Ex. Salle reptiles, terrarium 3..."
+        >
+
+        <label>Certificat d’origine</label>
+
+        <select name="origin">
+
+          <option value="NC">NC</option>
+          <option value="WC">WC</option>
+
+        </select>
+
+        <label>
+          Notes
+          <span class="muted">(optionnel)</span>
+        </label>
+
+        <textarea
+          name="notes"
+          placeholder="Informations supplémentaires..."
+        ></textarea>
+
+        <div class="formActions">
+
+          <button
+            type="button"
+            class="ghost"
+            id="cancelAnimal"
+          >
+            Annuler
+          </button>
+
+          <button
+            type="submit"
+            class="primary"
+          >
+            Créer
+          </button>
+
+        </div>
+
+      </form>
+    `);
+
+    const cancel=document.getElementById("cancelAnimal");
+
+    if(cancel) cancel.onclick=closeModal;
+  };
+}
+
+// ============================================================
+// RECHERCHE D'ESPÈCES
+// ============================================================
+
+document.addEventListener("input",e=>{
+
+  if(e.target.id!=="speciesSearch") return;
+
+  const q=String(e.target.value||"").trim();
+
+  const list=document.getElementById("speciesSuggestions");
+
+  const type=document.getElementById("animalType");
+
+  if(!list) return;
+
+  const local=SPECIES_CATALOG
+    .filter(x=>
+      x.name.toLowerCase().includes(
+        q.toLowerCase()
+      )
+    )
+    .slice(0,30);
+
+  list.innerHTML=
+    local.map(x=>
+      `<option value="${esc(x.name)}"></option>`
+    ).join("");
+
+  const match=SPECIES_CATALOG.find(x=>
+    x.name.toLowerCase()===q.toLowerCase()
+  );
+
+  if(match && type) {
+    type.value=match.type;
+  }
 
 });
 
-openModal(`
-
-<h2>
-${g?"Modifier le groupe":"Nouveau groupe d’espèces"}
-</h2>
-
-<label>
-Nom du groupe
-</label>
-
-<input
-id="groupName"
-value="${esc(g?.name||"")}"
-placeholder="Ex. Blattes"
->
-
-<label>
-Description
-</label>
-
-<input
-id="groupDescription"
-value="${esc(g?.description||"")}"
-placeholder="Ex. Nourrissage tous les 3 jours"
->
-
-<label>
-Espèces du groupe
-</label>
-
-<div
-style="
-max-height:360px;
-overflow:auto;
-border:1px solid rgba(128,128,128,.3);
-border-radius:10px;
-padding:8px
-"
->
-
-${catalog.map(s=>`
-
-<label
-style="
-display:flex;
-gap:9px;
-align-items:center;
-padding:7px 4px
-"
->
-
-<input
-type="checkbox"
-class="groupSpecies"
-value="${esc(s.name)}"
-${
-(g?.species||[])
-.some(
-x=>x.toLowerCase()===
-s.name.toLowerCase()
-)
-?"checked":""
-}
->
-
-${esc(s.name)}
-
-</label>
-
-`).join("")}
-
-</div>
-
-<div class="formActions">
-
-<button
-type="button"
-class="ghost"
-id="cancelGroup"
->
-Annuler
-</button>
-
-<button
-type="button"
-class="primary"
-id="saveGroup"
->
-${g?"Enregistrer":"Créer le groupe"}
-</button>
-
-</div>
-`);
-
-document.getElementById("cancelGroup")
-?.addEventListener(
-"click",
-closeModal
-);
-
-document.getElementById("saveGroup")
-?.addEventListener(
-"click",
-()=>{
+// ============================================================
+// SAUVEGARDE NOUVEL ANIMAL
+// ============================================================
 
-const name=
-document.getElementById("groupName")
-?.value.trim();
-
-const description=
-document.getElementById("groupDescription")
-?.value.trim();
-
-const species=
-[...document.querySelectorAll(".groupSpecies:checked")]
-.map(x=>x.value);
-
-if(!name){
-alert("Donne un nom au groupe.");
-return
-}
-
-if(!species.length){
-alert("Sélectionne au moins une espèce.");
-return
-}
-
-if(g){
-
-g.name=name;
-g.description=description;
-g.species=species
-
-}else{
-
-db.speciesGroups.push({
-id:uid(),
-name,
-description,
-species
-})
-
-}
-
-save();
-closeModal()
-
-}
-)
-}
-
-function openAnimalEditor(id){
-
-const a=animal(id);
-
-if(!a)return;
-
-openModal(`
-
-<h2>
-Modifier l’animal
-</h2>
-
-<label>
-Nom / identifiant
-</label>
-
-<input
-id="editName"
-value="${esc(a.name||"")}"
->
-
-<label>
-Espèce
-</label>
-
-<input
-id="editSpecies"
-value="${esc(a.species||"")}"
-required
->
-
-<label>
-Catégorie
-</label>
-
-<select id="editType">
-
-<option
-value="reptile"
-${a.type==="reptile"?"selected":""}
->
-Reptiles
-</option>
-
-<option
-value="amphibian"
-${a.type==="amphibian"?"selected":""}
->
-Amphibiens
-</option>
-
-<option
-value="gastropod"
-${a.type==="gastropod"?"selected":""}
->
-Gastéropodes
-</option>
-
-<option
-value="arthropod"
-${a.type==="arthropod"?"selected":""}
->
-Arthropodes
-</option>
-
-</select>
-
-<label>
-Date de naissance
-</label>
-
-<input
-id="editBirth"
-type="date"
-value="${esc(a.birthDate||"")}"
->
-
-<label>
-Localisation
-</label>
-
-<input
-id="editLocation"
-value="${esc(a.location||"")}"
-placeholder="Ex. Salle reptiles, terrarium 3"
->
-
-<label>
-Certificat d’origine
-</label>
-
-<select id="editOrigin">
-
-<option
-value="NC"
-${a.origin!=="WC"?"selected":""}
->
-NC
-</option>
-
-<option
-value="WC"
-${a.origin==="WC"?"selected":""}
->
-WC
-</option>
-
-</select>
-
-<label>
-Notes
-</label>
-
-<textarea id="editNotes">
-${esc(a.notes||"")}
-</textarea>
-
-<div class="formActions">
-
-<button
-type="button"
-class="ghost"
-id="cancelEdit"
->
-Annuler
-</button>
-
-<button
-type="button"
-class="primary"
-id="saveEdit"
->
-Enregistrer
-</button>
-
-</div>
-`);
-
-document.getElementById("cancelEdit")
-?.addEventListener(
-"click",
-closeModal
-);
-
-document.getElementById("saveEdit")
-?.addEventListener(
-"click",
-()=>{
-
-const species=
-document.getElementById("editSpecies")
-.value.trim();
-
-if(!species){
-alert("L’espèce est obligatoire.");
-return
-}
-
-a.name=
-document.getElementById("editName")
-.value.trim();
-
-a.species=species;
-
-a.type=
-document.getElementById("editType")
-.value;
-
-a.birthDate=
-document.getElementById("editBirth")
-.value;
-
-a.location=
-document.getElementById("editLocation")
-.value.trim();
-
-a.origin=
-document.getElementById("editOrigin")
-.value;
-
-a.notes=
-document.getElementById("editNotes")
-.value.trim();
+document.addEventListener("submit",e=>{
 
-save();
-closeModal()
-
-}
-)
-}
-
-function openAddAnimal(){
-
-openModal(`
-
-<h2>
-Ajouter un animal
-</h2>
-
-<label>
-Nom / identifiant
-</label>
-
-<input
-id="addName"
-placeholder="Ex. Kiwi"
->
-
-<label>
-Espèce
-</label>
-
-<input
-id="addSpecies"
-list="speciesList"
-placeholder="Ex. Blaptica dubia"
->
-
-<datalist id="speciesList">
-
-${SPECIES_CATALOG.map(s=>
-`<option value="${esc(s.name)}">`
-).join("")}
-
-</datalist>
-
-<label>
-Catégorie
-</label>
-
-<select id="addType">
-
-<option value="reptile">
-Reptiles
-</option>
-
-<option value="amphibian">
-Amphibiens
-</option>
-
-<option value="gastropod">
-Gastéropodes
-</option>
-
-<option
-value="arthropod"
-selected
->
-Arthropodes
-</option>
-
-</select>
-
-<label>
-Localisation
-</label>
-
-<input id="addLocation">
-
-<label>
-Origine
-</label>
-
-<select id="addOrigin">
-
-<option>
-NC
-</option>
-
-<option>
-WC
-</option>
-
-</select>
-
-<label>
-Notes
-</label>
-
-<textarea id="addNotes"></textarea>
-
-<div class="formActions">
-
-<button
-type="button"
-class="ghost"
-id="cancelAdd"
->
-Annuler
-</button>
-
-<button
-type="button"
-class="primary"
-id="saveAdd"
->
-Ajouter
-</button>
-
-</div>
-`);
-
-document.getElementById("cancelAdd")
-?.addEventListener(
-"click",
-closeModal
-);
-
-document.getElementById("saveAdd")
-?.addEventListener(
-"click",
-()=>{
-
-const species=
-document.getElementById("addSpecies")
-.value.trim();
-
-if(!species){
-alert("L’espèce est obligatoire.");
-return
-}
-
-db.animals.push({
-
-id:uid(),
-
-name:
-document.getElementById("addName")
-.value.trim()||species,
-
-species,
-
-type:
-document.getElementById("addType")
-.value,
-
-birthDate:"",
-
-location:
-document.getElementById("addLocation")
-.value.trim(),
-
-origin:
-document.getElementById("addOrigin")
-.value,
-
-notes:
-document.getElementById("addNotes")
-.value.trim()
+  if(e.target.id!=="animalForm") return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const f=new FormData(e.target);
+
+  const species=
+    String(f.get("species")||"").trim();
+
+  if(!species) {
+
+    alert("L’espèce est obligatoire.");
+
+    return;
+  }
+
+  db.animals.push({
+
+    id:crypto.randomUUID(),
+
+    name:
+      String(f.get("name")||"").trim(),
+
+    species,
+
+    type:
+      String(f.get("type")||"arthropod"),
+
+    birthDate:
+      String(f.get("birthDate")||""),
+
+    location:
+      String(f.get("location")||"").trim(),
+
+    origin:
+      String(f.get("origin")||"NC"),
+
+    notes:
+      String(f.get("notes")||"").trim()
+
+  });
+
+  save();
+  closeModal();
 
 });
 
-save();
-closeModal()
+// ============================================================
+// MODIFICATION ANIMAL
+// ============================================================
 
-}
-)
-}
+function openAnimalEditor(id) {
 
-document.getElementById("addAnimal")
-?.addEventListener(
-"click",
-openAddAnimal
-);
+  const a=animal(id);
 
-function activity(kind,preselect=null){
+  if(!a) return;
 
-if(!db.animals.length){
-alert("Ajoute d’abord un animal.");
-return
-}
+  openModal(`
 
-const now=
-new Date(
-Date.now()-
-new Date().getTimezoneOffset()*60000
-)
-.toISOString()
-.slice(0,16);
+    <h2>Modifier l’animal</h2>
 
-const groupOptions=
-db.speciesGroups.map(g=>{
+    <form id="editAnimalForm">
 
-const n=animalsForGroup(g).length;
+      <input
+        type="hidden"
+        name="id"
+        value="${esc(a.id)}"
+      >
 
-return `
-<option value="${esc(g.id)}">
-${esc(g.name)}
-—
-${n} animal${n>1?"aux":""}
-</option>
-`
+      <label>Nom / identifiant</label>
 
-}).join("");
+      <input
+        name="name"
+        value="${esc(a.name||"")}"
+        placeholder="Ex. Kiwi"
+      >
 
-const animalOptions=
-db.animals.map(a=>`
+      <label>Espèce</label>
 
-<option
-value="${esc(a.id)}"
-${a.id===preselect?"selected":""}
->
-${esc(a.name||a.species)}
-—
-${esc(a.species)}
-</option>
+      <input
+        name="species"
+        value="${esc(a.species||"")}"
+        required
+        list="editSpeciesSuggestions"
+      >
 
-`).join("");
+      <datalist id="editSpeciesSuggestions">
 
-openModal(`
+        ${SPECIES_CATALOG.map(x=>
+          `<option value="${esc(x.name)}"></option>`
+        ).join("")}
 
-<h2>
-${esc(labels[kind]||kind)}
-</h2>
+      </datalist>
 
-<label>
-Appliquer à
-</label>
+      <label>Catégorie</label>
 
-<select id="targetType">
+      <select name="type">
 
-<option value="animal">
-Un animal
-</option>
+        <option
+          value="reptile"
+          ${a.type==="reptile"?"selected":""}
+        >
+          Reptiles
+        </option>
 
-${
-db.speciesGroups.length
-?`
-<option value="group">
-Un groupe d’espèces
-</option>
-`
-:""
-}
+        <option
+          value="amphibian"
+          ${a.type==="amphibian"?"selected":""}
+        >
+          Amphibiens
+        </option>
 
-</select>
+        <option
+          value="gastropod"
+          ${a.type==="gastropod"?"selected":""}
+        >
+          Gastéropodes
+        </option>
 
-<div id="animalBox">
+        <option
+          value="arthropod"
+          ${a.type==="arthropod"?"selected":""}
+        >
+          Arthropodes
+        </option>
 
-<label>
-Animal
-</label>
+      </select>
 
-<select id="targetAnimal">
-${animalOptions}
-</select>
+      <label>Date de naissance</label>
 
-</div>
+      <input
+        name="birthDate"
+        type="date"
+        value="${esc(a.birthDate||"")}"
+      >
 
-${
-db.speciesGroups.length
-?`
+      <label>Localisation</label>
 
-<div
-id="groupBox"
-style="display:none"
->
+      <input
+        name="location"
+        value="${esc(a.location||"")}"
+        placeholder="Ex. Salle reptiles, terrarium 3..."
+      >
 
-<label>
-Groupe d’espèces
-</label>
+      <label>Certificat d’origine</label>
 
-<select id="targetGroup">
-${groupOptions}
-</select>
+      <select name="origin">
 
-<p
-id="groupInfo"
-class="muted"
-></p>
+        <option
+          value="NC"
+          ${a.origin==="NC"?"selected":""}
+        >
+          NC
+        </option>
 
-</div>
+        <option
+          value="WC"
+          ${a.origin==="WC"?"selected":""}
+        >
+          WC
+        </option>
 
-`
-:""
-}
+      </select>
 
-<label>
-Détail
-</label>
+      <label>Notes</label>
 
-<input
-id="activityDetails"
-placeholder="Ex. 3 grillons, brumisation 30 s..."
->
+      <textarea
+        name="notes"
+        placeholder="Informations supplémentaires..."
+      >${esc(a.notes||"")}</textarea>
 
-<label>
-Valeur / complément
-</label>
+      <div class="formActions">
 
-<input
-id="activityValue"
-placeholder="Quantité, calcium, durée…"
->
+        <button
+          type="button"
+          class="ghost"
+          id="cancelEditAnimal"
+        >
+          Annuler
+        </button>
 
-<label>
-Date et heure
-</label>
+        <button
+          type="submit"
+          class="primary"
+        >
+          Enregistrer
+        </button>
 
-<input
-id="activityDate"
-type="datetime-local"
-value="${now}"
->
+      </div>
 
-<div class="formActions">
+    </form>
+  `);
 
-<button
-type="button"
-class="ghost"
-id="cancelActivity"
->
-Annuler
-</button>
+  const cancel=document.getElementById("cancelEditAnimal");
 
-<button
-type="button"
-class="primary"
-id="saveActivity"
->
-Enregistrer
-</button>
-
-</div>
-`);
-
-const tt=
-document.getElementById("targetType");
-
-const ab=
-document.getElementById("animalBox");
-
-const gb=
-document.getElementById("groupBox");
-
-const gs=
-document.getElementById("targetGroup");
-
-const info=
-document.getElementById("groupInfo");
-
-function update(){
-
-const group=tt.value==="group";
-
-ab.style.display=
-group?"none":"block";
-
-if(gb)
-gb.style.display=
-group?"block":"none";
-
-if(group&&gs&&info){
-
-const g=getGroup(gs.value);
-
-const n=animalsForGroup(g).length;
-
-info.textContent=
-`${n} animal${n>1?"aux":""} concerné${n>1?"s":""}.`
-
+  if(cancel) cancel.onclick=closeModal;
 }
 
-}
+document.addEventListener("submit",e=>{
 
-tt.onchange=update;
+  if(e.target.id!=="editAnimalForm") return;
 
-if(gs)
-gs.onchange=update;
+  e.preventDefault();
+  e.stopPropagation();
 
-document.getElementById("cancelActivity")
-.onclick=closeModal;
+  const f=new FormData(e.target);
 
-document.getElementById("saveActivity")
-.onclick=()=>{
+  const a=animal(
+    String(f.get("id")||"")
+  );
 
-let targets=[];
-let group=null;
+  if(!a) {
 
-if(tt.value==="group"){
+    alert("Animal introuvable.");
 
-group=getGroup(gs.value);
+    return;
+  }
 
-targets=animalsForGroup(group);
+  const species=
+    String(f.get("species")||"").trim();
 
-if(!targets.length){
+  if(!species) {
 
-alert(
-"Aucun animal ne correspond aux espèces de ce groupe."
-);
+    alert("L’espèce est obligatoire.");
 
-return
-}
+    return;
+  }
 
-}else{
+  a.name=
+    String(f.get("name")||"").trim();
 
-const a=
-animal(
-document.getElementById("targetAnimal")
-.value
-);
+  a.species=species;
 
-if(a)
-targets=[a]
+  a.type=
+    String(f.get("type")||"arthropod");
 
-}
+  a.birthDate=
+    String(f.get("birthDate")||"");
 
-if(!targets.length){
+  a.location=
+    String(f.get("location")||"").trim();
 
-alert("Animal introuvable.");
+  a.origin=
+    String(f.get("origin")||"NC");
 
-return
-}
+  a.notes=
+    String(f.get("notes")||"").trim();
 
-const dateValue=
-document.getElementById("activityDate")
-.value;
-
-const date=
-dateValue
-?new Date(dateValue).toISOString()
-:new Date().toISOString();
-
-const details=
-document.getElementById("activityDetails")
-.value.trim();
-
-const value=
-document.getElementById("activityValue")
-.value.trim();
-
-targets.forEach(a=>{
-
-db.events.push({
-
-id:uid(),
-
-animalId:a.id,
-
-kind,
-
-details:
-group
-?(
-details
-?`${details} · Groupe : ${group.name}`
-:`Groupe : ${group.name}`
-)
-:details,
-
-value,
-
-date
-
-})
+  save();
+  closeModal();
 
 });
 
-save();
-closeModal();
+// ============================================================
+// FORMULAIRE GROUPE
+// ============================================================
 
-if(group){
+document.addEventListener("submit",e=>{
 
-alert(
-`${targets.length} animal${targets.length>1?"aux":""} mis à jour.`
-)
+  if(e.target.id!=="groupForm") return;
 
+  e.preventDefault();
+  e.stopPropagation();
+
+  const f=new FormData(e.target);
+
+  const id=
+    String(f.get("id")||"").trim();
+
+  const name=
+    String(f.get("name")||"").trim();
+
+  const description=
+    String(f.get("description")||"").trim();
+
+  const species=[
+    ...new Set(
+      f.getAll("species")
+        .map(x=>String(x).trim())
+        .filter(Boolean)
+    )
+  ];
+
+  if(!name) {
+
+    alert("Donne un nom au groupe.");
+
+    return;
+  }
+
+  if(!species.length) {
+
+    alert("Sélectionne au moins une espèce.");
+
+    return;
+  }
+
+  if(id) {
+
+    const group=getGroup(id);
+
+    if(group) {
+
+      group.name=name;
+      group.description=description;
+      group.species=species;
+
+    }
+
+  } else {
+
+    db.speciesGroups.push({
+
+      id:crypto.randomUUID(),
+
+      name,
+
+      description,
+
+      species
+
+    });
+
+  }
+
+  save();
+  closeModal();
+
+});
+
+// ============================================================
+// CLICS SUR GROUPES
+// ============================================================
+
+document.addEventListener("click",e=>{
+
+  const edit=e.target.closest(".editGroup");
+
+  if(edit) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    openGroupEditor(edit.dataset.id);
+
+    return;
+  }
+
+  const del=e.target.closest(".deleteGroup");
+
+  if(del) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const group=getGroup(del.dataset.id);
+
+    if(!group) return;
+
+    const members=animalsForGroup(group);
+
+    const ok=confirm(
+      `Supprimer le groupe « ${group.name} » ?\n\n`+
+      `${members.length} animal${members.length>1?"aux":""} `+
+      `seront simplement retirés du groupe. `+
+      `Les animaux et leurs activités ne seront pas supprimés.`
+    );
+
+    if(!ok) return;
+
+    db.speciesGroups=
+      db.speciesGroups.filter(
+        g=>g.id!==group.id
+      );
+
+    save();
+
+  }
+
+});
+
+// ============================================================
+// ROUTINE
+// ============================================================
+
+const addRoutine=document.getElementById("addRoutine");
+
+if(addRoutine) {
+
+  addRoutine.onclick=()=>{
+
+    if(!db.animals.length) {
+
+      openModal(`
+        <h2>Ajoute d’abord un animal</h2>
+
+        <p class="muted">
+          Crée au moins un animal avant de programmer
+          une routine.
+        </p>
+      `);
+
+      return;
+    }
+
+    const species=[
+      ...new Set(
+        db.animals.map(a=>a.species)
+      )
+    ];
+
+    openModal(`
+
+      <h2>Nouvelle routine</h2>
+
+      <form id="routineForm">
+
+        <label>Espèce</label>
+
+        <select name="species">
+
+          ${species.map(x=>
+            `<option>${esc(x)}</option>`
+          ).join("")}
+
+        </select>
+
+        <label>Action</label>
+
+        <select name="kind">
+
+          <option value="feeding">
+            Nourrissage
+          </option>
+
+          <option value="watering">
+            Arrosage / brumisation
+          </option>
+
+          <option value="waterChange">
+            Changement de l’eau
+          </option>
+
+          <option value="cleaning">
+            Nettoyage
+          </option>
+
+          <option value="note">
+            Observation
+          </option>
+
+        </select>
+
+        <label>Fréquence</label>
+
+        <select name="frequency">
+
+          <option value="daily">
+            Tous les jours
+          </option>
+
+          <option value="weekly">
+            Chaque semaine
+          </option>
+
+          <option value="interval">
+            Tous les X jours
+          </option>
+
+        </select>
+
+        <label>Intervalle</label>
+
+        <input
+          name="interval"
+          type="number"
+          min="1"
+          value="2"
+        >
+
+        <label>Heure</label>
+
+        <input
+          name="time"
+          type="time"
+          value="18:00"
+        >
+
+        <label>Jours</label>
+
+        <input
+          name="days"
+          placeholder="Lundi, mercredi, vendredi"
+        >
+
+        <div class="formActions">
+
+          <button
+            type="button"
+            class="ghost"
+            id="cancelRoutine"
+          >
+            Annuler
+          </button>
+
+          <button
+            type="submit"
+            class="primary"
+          >
+            Créer
+          </button>
+
+        </div>
+
+      </form>
+    `);
+
+    const cancel=document.getElementById("cancelRoutine");
+
+    if(cancel) cancel.onclick=closeModal;
+  };
 }
 
-};
+document.addEventListener("submit",e=>{
 
-update()
+  if(e.target.id!=="routineForm") return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const f=new FormData(e.target);
+
+  db.speciesRoutines.push({
+
+    id:crypto.randomUUID(),
+
+    species:
+      String(f.get("species")||""),
+
+    kind:
+      String(f.get("kind")||"note"),
+
+    frequency:
+      String(f.get("frequency")||"daily"),
+
+    interval:
+      Number(f.get("interval")||1),
+
+    time:
+      String(f.get("time")||"18:00"),
+
+    days:
+      String(f.get("days")||"")
+
+  });
+
+  save();
+  closeModal();
+
+});
+
+// ============================================================
+// ACTIVITÉS
+// ============================================================
+
+function activity(kind,preselect=null) {
+
+  if(!db.animals.length) {
+
+    openModal(`
+
+      <h2>Ajoute d’abord un animal</h2>
+
+      <p class="muted">
+        Il faut un animal pour enregistrer une activité.
+      </p>
+
+    `);
+
+    return;
+  }
+
+  const now=
+    new Date(
+      Date.now()-
+      new Date().getTimezoneOffset()*60000
+    )
+    .toISOString()
+    .slice(0,16);
+
+  const groups=db.speciesGroups;
+
+  const animalOptions=db.animals.map(a=>`
+
+    <option
+      value="${esc(a.id)}"
+      ${a.id===preselect?"selected":""}
+    >
+      ${esc(a.name||"Sans nom")}
+      — ${esc(a.species)}
+    </option>
+
+  `).join("");
+
+  const groupOptions=groups.map(g=>{
+
+    const count=animalsForGroup(g).length;
+
+    return `
+      <option value="${esc(g.id)}">
+        ${esc(g.name)}
+        — ${count} animal${count>1?"aux":""}
+      </option>
+    `;
+
+  }).join("");
+
+  const detailField=
+    kind==="waterChange"
+    ?""
+    :`
+      <label>Détail</label>
+
+      <input
+        name="details"
+        placeholder="${
+          kind==="feeding"
+          ?"Ex. 3 grillons"
+          :kind==="watering"
+          ?"Ex. brumisation 30 s"
+          :"Observation..."
+        }"
+      >
+    `;
+
+  const valueField=
+    kind==="feeding"
+    ?`
+      <label>Complément</label>
+
+      <select name="value">
+
+        <option value="">
+          Aucun
+        </option>
+
+        <option value="Calcium">
+          Calcium
+        </option>
+
+        <option value="Vitamine D3">
+          Vitamine D3
+        </option>
+
+        <option value="Vitamine">
+          Vitamine
+        </option>
+
+      </select>
+    `
+    :kind==="waterChange"
+    ?""
+    :`
+      <label>Valeur</label>
+
+      <input
+        name="value"
+        placeholder="${
+          kind==="weight"
+          ?"Ex. 482 g"
+          :"Quantité, durée…"
+        }"
+      >
+    `;
+
+  openModal(`
+
+    <h2>
+      ${esc(labels[kind]||kind)}
+    </h2>
+
+    <form id="eventForm">
+
+      <input
+        type="hidden"
+        name="kind"
+        value="${esc(kind)}"
+      >
+
+      <label>Appliquer à</label>
+
+      <select
+        id="activityTargetType"
+        name="targetType"
+      >
+
+        <option value="animal">
+          Un animal
+        </option>
+
+        ${
+          groups.length
+          ?`
+            <option value="group">
+              Un groupe d'espèces
+            </option>
+          `
+          :""
+        }
+
+      </select>
+
+      <div id="animalTarget">
+
+        <label>Animal</label>
+
+        <select name="animalId">
+
+          ${animalOptions}
+
+        </select>
+
+      </div>
+
+      ${
+        groups.length
+        ?`
+          <div
+            id="groupTarget"
+            style="display:none"
+          >
+
+            <label>Groupe d'espèces</label>
+
+            <select name="groupId">
+
+              ${groupOptions}
+
+            </select>
+
+            <p
+              id="groupTargetInfo"
+              class="muted"
+            ></p>
+
+          </div>
+        `
+        :""
+      }
+
+      ${detailField}
+
+      ${valueField}
+
+      <label>Date et heure</label>
+
+      <input
+        type="datetime-local"
+        name="date"
+        value="${now}"
+      >
+
+      <div class="formActions">
+
+        <button
+          type="button"
+          class="ghost"
+          id="cancelEvent"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="submit"
+          class="primary"
+        >
+          Enregistrer
+        </button>
+
+      </div>
+
+    </form>
+  `);
+
+  const targetType=
+    document.getElementById("activityTargetType");
+
+  const animalTarget=
+    document.getElementById("animalTarget");
+
+  const groupTarget=
+    document.getElementById("groupTarget");
+
+  const groupSelect=
+    document.querySelector('#eventForm select[name="groupId"]');
+
+  const groupInfo=
+    document.getElementById("groupTargetInfo");
+
+  function updateTarget() {
+
+    const isGroup=
+      targetType &&
+      targetType.value==="group";
+
+    if(animalTarget) {
+      animalTarget.style.display=
+        isGroup ? "none" : "block";
+    }
+
+    if(groupTarget) {
+      groupTarget.style.display=
+        isGroup ? "block" : "none";
+    }
+
+    if(isGroup && groupSelect && groupInfo) {
+
+      const group=getGroup(groupSelect.value);
+
+      if(group) {
+
+        const count=animalsForGroup(group).length;
+
+        groupInfo.textContent=
+          `${count} animal${count>1?"aux":""} concerné${count>1?"s":""} `+
+          `par cette activité.`;
+
+      }
+
+    }
+
+  }
+
+  if(targetType) {
+    targetType.onchange=updateTarget;
+  }
+
+  if(groupSelect) {
+    groupSelect.onchange=updateTarget;
+  }
+
+  const cancel=document.getElementById("cancelEvent");
+
+  if(cancel) cancel.onclick=closeModal;
+
+  updateTarget();
 }
 
-document.querySelectorAll("[data-action]")
-.forEach(b=>
-b.addEventListener(
-"click",
-()=>activity(b.dataset.action)
-)
-);
+// ============================================================
+// BOUTONS D'ACTIVITÉS EXISTANTS
+// ============================================================
 
-function render(){
+document.querySelectorAll("[data-action]").forEach(button=>{
 
-const today=
-new Date()
-.toLocaleDateString(
-"fr-FR",
-{
-weekday:"long",
-day:"numeric",
-month:"long"
-}
-);
+  button.onclick=()=>{
+    activity(button.dataset.action);
+  };
 
-const title=
-document.getElementById("todayTitle");
+});
 
-if(title)
-title.textContent=today;
+// ============================================================
+// ACTIVITÉ DEPUIS UN ANIMAL
+// ============================================================
 
-const summary=
-document.getElementById("summary");
+document.addEventListener("click",e=>{
 
-if(summary){
+  const button=e.target.closest(".animalAction");
 
-summary.textContent=
-`${db.animals.length} animaux suivis · ${db.events.length} activités enregistrées`
+  if(!button) return;
 
-}
+  e.preventDefault();
+  e.stopPropagation();
 
-const grid=
-document.getElementById("animalGrid");
+  activity(
+    "note",
+    button.dataset.id
+  );
 
-if(grid)
-grid.innerHTML=
-db.animals
-.slice(0,12)
-.map(card)
-.join("");
+});
 
-renderGroups();
-renderHistory();
-renderReminders()
-}
+// ============================================================
+// ENREGISTRER UNE ACTIVITÉ
+// ============================================================
 
-function renderHistory(){
+document.addEventListener("submit",e=>{
 
-const el=
-document.getElementById("historyList");
+  if(e.target.id!=="eventForm") return;
 
-if(!el)return;
+  e.preventDefault();
+  e.stopPropagation();
 
-const rows=
-[...db.events]
-.sort(
-(a,b)=>
-new Date(b.date)-new Date(a.date)
-);
+  const f=new FormData(e.target);
 
-el.innerHTML=
-rows.length
-?rows.slice(0,100).map(e=>{
+  const targetType=
+    String(f.get("targetType")||"animal");
 
-const a=animal(e.animalId);
+  let targetAnimals=[];
 
-return `
+  if(targetType==="group") {
 
-<div class="event">
+    const group=getGroup(
+      String(f.get("groupId")||"")
+    );
 
-<div>
+    if(!group) {
 
-<b>
-${esc(labels[e.kind]||e.kind)}
-</b>
+      alert("Groupe introuvable.");
 
-—
-${esc(a?.name||a?.species||"Animal supprimé")}
+      return;
+    }
 
-<div class="muted">
-${new Date(e.date).toLocaleString("fr-FR")}
-</div>
+    targetAnimals=animalsForGroup(group);
 
-${
-e.details
-?`<div>${esc(e.details)}</div>`
-:""
-}
+    if(!targetAnimals.length) {
 
-${
-e.value
-?`<div>${esc(e.value)}</div>`
-:""
-}
+      alert(
+        "Aucun animal ne correspond aux espèces de ce groupe."
+      );
 
-</div>
+      return;
+    }
 
-</div>
+  } else {
 
-`
+    const a=animal(
+      String(f.get("animalId")||"")
+    );
 
-}).join("")
-:"<p class='muted'>Aucune activité.</p>"
-}
+    if(!a) {
 
-function renderReminders(){
+      alert("Animal introuvable.");
 
-const today=
-document.getElementById("todayReminders");
+      return;
+    }
 
-const list=
-document.getElementById("routineList");
+    targetAnimals=[a];
+  }
 
-if(today){
+  const dateValue=
+    String(f.get("date")||"");
 
-today.innerHTML=
-db.reminders.length
-?db.reminders.map(r=>`
+  const date=
+    dateValue
+    ?new Date(dateValue).toISOString()
+    :new Date().toISOString();
 
-<div class="event">
+  const kind=
+    String(f.get("kind")||"note");
 
-<div>
+  const details=
+    String(f.get("details")||"");
 
-<b>
-${esc(r.title||r.kind||"Rappel")}
-</b>
+  const value=
+    String(f.get("value")||"");
 
-<div class="muted">
-${esc(r.date||"")}
-</div>
+  const group=
+    targetType==="group"
+    ?getGroup(String(f.get("groupId")||""))
+    :null;
 
-</div>
+  targetAnimals.forEach(a=>{
 
-</div>
+    db.events.push({
 
-`).join("")
-:"<p class='muted'>Aucun rappel aujourd’hui.</p>"
+      id:crypto.randomUUID(),
 
-}
+      animalId:a.id,
 
-if(list){
+      kind,
 
-list.innerHTML=
-db.speciesRoutines.length
-?db.speciesRoutines.map(r=>`
+      details:
+        targetType==="group"
+        ?(
+          details
+          ?`${details} · Groupe : ${group.name}`
+          :`Groupe : ${group.name}`
+        )
+        :details,
 
-<div class="event">
+      value,
 
-<div>
+      date
 
-<b>
-${esc(r.name||r.title||"Routine")}
-</b>
+    });
 
-<div class="muted">
-${esc(r.frequency||"")}
-</div>
+  });
 
-</div>
+  save();
+  closeModal();
 
-</div>
+  if(targetType==="group") {
 
-`).join("")
-:"<p class='muted'>Aucune routine.</p>"
+    alert(
+      `${targetAnimals.length} animal${targetAnimals.length>1?"aux":""} `+
+      `mis à jour.`
+    );
 
-}
+  }
 
-}
+});
 
-document.addEventListener(
-"click",
-e=>{
+// ============================================================
+// RAPPEL EFFECTUÉ
+// ============================================================
 
-const g=
-e.target.closest(
-"#newSpeciesGroup,.editGroup,.deleteGroup"
-);
+document.addEventListener("click",e=>{
 
-if(g){
+  const button=e.target.closest(".doneReminder");
 
-if(g.id==="newSpeciesGroup")
-return openGroupEditor();
+  if(!button) return;
 
-if(g.classList.contains("editGroup"))
-return openGroupEditor(g.dataset.id);
+  const reminder=db.reminders.find(
+    x=>x.id===button.dataset.id
+  );
 
-if(g.classList.contains("deleteGroup")){
+  if(!reminder) return;
 
-const group=
-getGroup(g.dataset.id);
+  reminder.done=true;
 
-if(
-group&&
-confirm(
-`Supprimer le groupe « ${group.name} » ?\n\nLes animaux et leurs activités seront conservés.`
-)
-){
+  const routine=db.speciesRoutines.find(
+    x=>x.id===reminder.routineId
+  );
 
-db.speciesGroups=
-db.speciesGroups.filter(
-x=>x.id!==group.id
-);
+  db.events.push({
 
-save()
+    id:crypto.randomUUID(),
 
-}
+    animalId:reminder.animalId,
 
-return
-}
+    kind:routine?.kind||"note",
 
-}
+    details:"Rappel effectué",
 
-const aa=
-e.target.closest(".animalAction");
+    date:new Date().toISOString()
 
-if(aa){
+  });
 
-e.stopPropagation();
+  save();
 
-return activity(
-aa.dataset.kind,
-aa.dataset.id
-)
+});
 
-}
+// ============================================================
+// SUPPRESSION ROUTINE
+// ============================================================
 
-const c=
-e.target.closest(".animalCard");
+document.addEventListener("click",e=>{
 
-if(c)
-return openAnimalEditor(
-c.dataset.id
-)
+  const button=e.target.closest(".deleteRoutine");
 
-}
-);
+  if(!button) return;
+
+  const id=button.dataset.id;
+
+  db.speciesRoutines=
+    db.speciesRoutines.filter(
+      x=>x.id!==id
+    );
+
+  db.reminders=
+    db.reminders.filter(
+      x=>x.routineId!==id
+    );
+
+  save();
+
+});
+
+// ============================================================
+// CLICS ANIMAUX
+// ============================================================
+
+document.addEventListener("click",e=>{
+
+  const edit=e.target.closest(".editAnimal");
+
+  if(edit) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    openAnimalEditor(edit.dataset.id);
+
+    return;
+  }
+
+  const off=e.target.closest(".deactivateAnimal");
+
+  if(off) {
+    e.preventDefault();
+    e.stopPropagation();
+    const a=animal(off.dataset.id);
+    if(a && confirm(`Désactiver ${a.name||a.species} ?\n\nL'animal restera dans l'historique et pourra être réactivé.`)) {
+      a.active=false;
+      save();
+    }
+    return;
+  }
+
+  const on=e.target.closest(".reactivateAnimal");
+
+  if(on) {
+    e.preventDefault();
+    e.stopPropagation();
+    const a=animal(on.dataset.id);
+    if(a) { a.active=true; save(); }
+    return;
+  }
+
+  const del=e.target.closest(".deleteAnimal");
+
+  if(del) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const a=animal(del.dataset.id);
+
+    if(!a) return;
+
+    const ok=confirm(
+      `Supprimer ${a.name||a.species} ?\n`+
+      `Ses activités seront aussi supprimées.`
+    );
+
+    if(!ok) return;
+
+    db.animals=
+      db.animals.filter(
+        x=>x.id!==a.id
+      );
+
+    db.events=
+      db.events.filter(
+        x=>x.animalId!==a.id
+      );
+
+    db.reminders=
+      db.reminders.filter(
+        x=>x.animalId!==a.id
+      );
+
+    save();
+
+    return;
+  }
+
+  const action=e.target.closest(".animalAction");
+
+  if(action) return;
+
+  const cardElement=e.target.closest(".animalCard");
+
+  if(cardElement) {
+
+    openAnimalEditor(
+      cardElement.dataset.id
+    );
+
+  }
+
+});
+
+// ============================================================
+// INSTALLATION PWA
+// ============================================================
 
 let deferred;
 
 window.addEventListener(
-"beforeinstallprompt",
-e=>{
+  "beforeinstallprompt",
+  e=>{
 
-e.preventDefault();
+    e.preventDefault();
 
-deferred=e;
+    deferred=e;
 
-document.getElementById("installBtn")
-?.classList.remove("hidden")
+    const button=
+      document.getElementById("installBtn");
 
-}
+    if(button) {
+      button.classList.remove("hidden");
+    }
+
+  }
 );
 
-document.getElementById("installBtn")
-?.addEventListener(
-"click",
-async()=>{
-if(deferred){
-deferred.prompt();
-deferred=null
-}
-}
-);
+const installBtn=
+  document.getElementById("installBtn");
 
-if("serviceWorker" in navigator){
+if(installBtn) {
 
-window.addEventListener(
-"load",
-()=>{
+  installBtn.onclick=async()=>{
 
-navigator.serviceWorker
-.register("sw.js")
-.catch(()=>{})
+    if(!deferred) return;
+
+    deferred.prompt();
+
+    deferred=null;
+
+  };
 
 }
-)
+
+// ============================================================
+// SERVICE WORKER
+// ============================================================
+
+// On ne désinstalle plus le service worker ici.
+// Cela évite de casser le fonctionnement PWA.
+
+if("serviceWorker" in navigator) {
+
+  window.addEventListener(
+    "load",
+    ()=>{
+      navigator.serviceWorker
+        .register("sw.js")
+        .catch(err=>{
+          console.log(
+            "Service worker non disponible:",
+            err
+          );
+        });
+    }
+  );
 
 }
+
+
+// ============================================================
+// TÂCHES : Aujourd'hui / Tableau / Calendrier / Recherche
+// ============================================================
+let taskView="today";
+let taskDate=new Date();
+
+function taskTargetName(t){
+  if(t.targetType==="group") return getGroup(t.targetId)?.name||"Groupe supprimé";
+  const a=animal(t.targetId); return a?.name||a?.species||"Animal supprimé";
+}
+function sameTaskDay(a,b){
+  const x=new Date(a),y=new Date(b);
+  return x.getFullYear()===y.getFullYear()&&x.getMonth()===y.getMonth()&&x.getDate()===y.getDate();
+}
+function openTaskEditor(){
+  const aa=db.animals.filter(a=>a.active!==false);
+  if(!aa.length){alert("Aucun animal actif.");return;}
+  openModal(`
+    <h2>Nouvelle tâche</h2>
+    <label>Titre</label><input id="taskTitle" placeholder="Ex. Nourrir les blattes">
+    <label>Type</label><select id="taskKind">${Object.entries(activityLabels).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select>
+    <label>Pour</label><select id="taskTargetType"><option value="animal">Un animal</option>${db.speciesGroups.length?'<option value="group">Un groupe d’espèces</option>':''}</select>
+    <div id="taskAnimalBox"><label>Animal</label><select id="taskAnimal">${aa.map(a=>`<option value="${esc(a.id)}">${esc(a.name||a.species)} — ${esc(a.species)}</option>`).join("")}</select></div>
+    ${db.speciesGroups.length?`<div id="taskGroupBox" style="display:none"><label>Groupe</label><select id="taskGroup">${db.speciesGroups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div>`:""}
+    <label>Date et heure</label><input id="taskDate" type="datetime-local" value="${new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16)}">
+    <label>Détail</label><input id="taskDetail" placeholder="Détail facultatif">
+    <div class="formActions"><button type="button" class="ghost" id="cancelTask">Annuler</button><button type="button" class="primary" id="saveTask">Créer</button></div>
+  `);
+  const tt=document.getElementById("taskTargetType"),ab=document.getElementById("taskAnimalBox"),gb=document.getElementById("taskGroupBox");
+  tt.onchange=()=>{const g=tt.value==="group";ab.style.display=g?"none":"block";if(gb)gb.style.display=g?"block":"none"};
+  document.getElementById("cancelTask").onclick=closeModal;
+  document.getElementById("saveTask").onclick=()=>{
+    const title=document.getElementById("taskTitle").value.trim()||activityLabels[document.getElementById("taskKind").value];
+    const date=new Date(document.getElementById("taskDate").value);
+    db.tasks.push({id:crypto.randomUUID(),title,kind:document.getElementById("taskKind").value,targetType:tt.value,targetId:tt.value==="group"?document.getElementById("taskGroup").value:document.getElementById("taskAnimal").value,date:date.toISOString(),detail:document.getElementById("taskDetail").value.trim(),status:"todo"});
+    save();closeModal();renderTasksPage();
+  };
+}
+function renderTasksPage(){
+  const sec=document.getElementById("reminders"); if(!sec)return;
+  const today=new Date(), start=new Date();start.setHours(0,0,0,0);
+  const overdue=db.tasks.filter(t=>t.status!=="done"&&new Date(t.date)<start).length;
+  const due=db.tasks.filter(t=>t.status!=="done"&&sameTaskDay(t.date,today)).length;
+  const q=document.getElementById("taskSearch")?.value?.toLowerCase()||"";
+  let ts=db.tasks.filter(t=>!q||`${t.title} ${taskTargetName(t)} ${t.detail||""}`.toLowerCase().includes(q));
+  if(taskView==="today")ts=ts.filter(t=>sameTaskDay(t.date,taskDate));
+  const item=t=>`<div class="event" style="display:flex;gap:8px;align-items:center;margin:8px 0"><button type="button" class="ghost taskDone" data-id="${esc(t.id)}">${t.status==="done"?"☑️":"⬜"}</button><div style="flex:1"><b>${esc(t.title)}</b><div class="muted">${new Date(t.date).toLocaleString("fr-FR")} · ${esc(taskTargetName(t))}</div>${t.detail?`<div>${esc(t.detail)}</div>`:""}</div><button type="button" class="ghost taskDelete" data-id="${esc(t.id)}">🗑️</button></div>`;
+  let body="";
+  if(taskView==="board") body=`<div style="display:flex;gap:10px;overflow:auto">${[["todo","À faire"],["progress","En cours"],["done","Terminé"]].map(([st,lab])=>`<div class="card" style="min-width:260px"><h3>${lab} (${ts.filter(t=>t.status===st).length})</h3>${ts.filter(t=>t.status===st).map(item).join("")||"<p class='muted'>Aucune tâche ici.</p>"}</div>`).join("")}</div>`;
+  else if(taskView==="calendar") body=`<div style="display:flex;justify-content:space-between;align-items:center"><button class="ghost taskPrev">‹</button><h3>${taskDate.toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}</h3><button class="ghost taskNext">›</button></div><div style="display:flex;gap:6px;overflow:auto;margin-bottom:12px">${[-3,-2,-1,0,1,2,3].map(n=>{const d=new Date(taskDate);d.setDate(d.getDate()+n);return `<button class="ghost taskDay" data-date="${d.toISOString()}">${d.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric"})}</button>`}).join("")}</div>${ts.filter(t=>sameTaskDay(t.date,taskDate)).map(item).join("")||"<p class='muted'>Rien de prévu.</p>"}`;
+  else body=ts.sort((a,b)=>new Date(a.date)-new Date(b.date)).map(item).join("")||"<p class='muted'>Aucune tâche.</p>";
+  sec.innerHTML=`<div class="sectionHead"><div><span class="eyebrow">ORGANISATION</span><h2>Tâches & rappels</h2><p class="muted">${db.tasks.filter(t=>t.status!=="done").length} en cours · ${db.tasks.filter(t=>t.status==="done").length} terminées</p></div><button class="primary" id="newTask">+ Nouvelle</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div class="card"><b>⚠️ En retard</b><h2>${overdue}</h2></div><div class="card"><b>🕒 À faire aujourd’hui</b><h2>${due}</h2></div></div><div style="display:flex;gap:6px;overflow:auto;margin-bottom:10px"><button class="ghost taskTab" data-view="today">☷ Aujourd’hui</button><button class="ghost taskTab" data-view="board">▥ Tableau</button><button class="ghost taskTab" data-view="calendar">▣ Calendrier</button><button class="ghost taskTab" data-view="all">Tous</button></div><input id="taskSearch" placeholder="🔎 Rechercher des tâches, animaux..." value="${esc(q)}"><div style="margin-top:12px">${body}</div>`;
+  document.getElementById("newTask").onclick=openTaskEditor;
+  document.querySelectorAll(".taskTab").forEach(b=>b.onclick=()=>{taskView=b.dataset.view;renderTasksPage()});
+  document.getElementById("taskSearch").oninput=renderTasksPage;
+}
+function renderTasksHook(){renderTasksPage()}
+
+document.addEventListener("click",e=>{
+  const done=e.target.closest(".taskDone");
+  if(done){const t=db.tasks.find(x=>x.id===done.dataset.id);if(t){t.status=t.status==="done"?"todo":"done";save();renderTasksPage()}return}
+  const del=e.target.closest(".taskDelete");
+  if(del){db.tasks=db.tasks.filter(x=>x.id!==del.dataset.id);save();renderTasksPage();return}
+  const day=e.target.closest(".taskDay");
+  if(day){taskDate=new Date(day.dataset.date);renderTasksPage();return}
+  if(e.target.closest(".taskPrev")){taskDate.setDate(taskDate.getDate()-1);renderTasksPage();return}
+  if(e.target.closest(".taskNext")){taskDate.setDate(taskDate.getDate()+1);renderTasksPage();return}
+});
+
+// ============================================================
+// DÉMARRAGE
+// ============================================================
 
 render();
